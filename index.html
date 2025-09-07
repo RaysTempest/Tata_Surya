@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misi Bintang Ceria (Versi Deluxe)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep-space: #01001a;
+            --accent-glow: #00ffff;
+            --font-title: 'Fredoka One', cursive;
+            --font-body: 'Poppins', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--bg-deep-space);
+            background-image:
+                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
+            background-size: 550px 550px, 350px 350px;
+            background-position: 0 0, 40px 60px;
+            animation: stars 200s linear infinite;
+            overflow: hidden;
+            color: white;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        @keyframes stars {
+            from { background-position: 0 0, 40px 60px; }
+            to { background-position: -5000px 2500px, -4000px 2000px; }
+        }
+
+        .font-title { font-family: var(--font-title); }
+        .text-glow { text-shadow: 0 0 8px var(--accent-glow), 0 0 10px var(--accent-glow); }
+        .hidden { display: none !important; }
+
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0, 255, 255, 0.25);
+            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
+        }
+
+        .btn-primary {
+            font-family: var(--font-title);
+            background: linear-gradient(45deg, #00c6ff, #0072ff);
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            color: white;
+            font-size: 1.25rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 0 15px rgba(0, 198, 255, 0.5), inset 0 -2px 5px rgba(0,0,0,0.2);
+            transform: scale(1);
+        }
+        .btn-primary:hover {
+            transform: scale(1.05) translateY(-2px);
+            box-shadow: 0 0 25px rgba(0, 198, 255, 0.8), inset 0 -2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .orbit-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90vmin;
+            height: 90vmin;
+        }
+
+        .orbit {
+            position: absolute;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .planet {
+            position: absolute;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            animation: orbit-anim linear infinite;
+        }
+        @keyframes orbit-anim {
+            from { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
+            to { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
+        }
+
+        .planet:hover {
+            animation-play-state: paused;
+            transform: scale(1.3) !important;
+            box-shadow: 0 0 20px #fff, 0 0 30px var(--accent-glow);
+        }
+        .planet-label {
+            position: absolute;
+            bottom: -35px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            background-color: rgba(0,0,0,0.7);
+            padding: 4px 10px;
+            border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        .screen, .modal { animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+
+        .creator-preview-bg {
+            background-image: url('https://i.ibb.co/6rP1tC3/bg-prev.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .choice-item {
+            border: 3px solid transparent;
+            transition: all 0.2s ease-in-out;
+            border-radius: 12px;
+        }
+        .choice-item.selected {
+            border-color: var(--accent-glow);
+            transform: scale(1.1);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .sorting-bin.drag-over {
+            background-color: rgba(0, 255, 255, 0.2);
+            border-style: solid;
+        }
+        
+        .custom-tab {
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+        .custom-tab.active {
+            border-bottom-color: var(--accent-glow);
+            color: var(--accent-glow);
+        }
+        input[type="color"] {
+            -webkit-appearance: none;
+            width: 50px;
+            height: 50px;
+            border: none;
+            padding: 0;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: 2px solid #fff;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body class="w-screen h-screen">
+
+    <audio id="bg-music" loop src="https://assets.mixkit.co/music/preview/mixkit-a-very-happy-christmas-897.mp3" preload="auto"></audio>
+    <audio id="click-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_c6ccf3235f.mp3" preload="auto"></audio>
+    <audio id="success-sound" src="https://cdn.pixabay.com/download/audio/2022/01/21/audio_a72f053a80.mp3" preload="auto"></audio>
+    <audio id="fail-sound" src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_b2f3493433.mp3" preload="auto"></audio>
+
+    <div id="app-container" class="w-full h-full">
+
+        <div id="start-screen" class="screen flex flex-col items-center justify-center w-full h-full text-center p-4">
+            <h1 class="font-title text-7xl md:text-8xl text-glow drop-shadow-lg">Misi Bintang Ceria</h1>
+            <p class="text-xl md:text-2xl mt-4 max-w-2xl">Selamat datang, Astronot! Galaksi membutuhkanmu untuk mengusir "Kabut Lupa" dengan mengumpulkan Kristal Pengetahuan.</p>
+            <div class="mt-10">
+                <button id="start-new-game-btn" class="btn-primary">Mulai Misi Baru</button>
+            </div>
+            <div class="absolute bottom-4 right-4 flex items-center space-x-2 p-2 glass-panel rounded-full">
+                <span class="text-lg pl-2">Suara:</span>
+                <button id="toggle-sound-btn" class="text-3xl">🔊</button>
+            </div>
+        </div>
+
+        <div id="creator-screen" class="screen hidden flex-col items-center justify-center w-full h-full p-4">
+            <div class="glass-panel rounded-2xl p-6 w-full max-w-6xl">
+                <h2 class="font-title text-4xl text-center text-glow mb-4">Buat Kru Angkasamu</h2>
+                <div class="flex flex-col md:flex-row gap-8 h-[70vh]">
+                    <div class="md:w-1/3 flex flex-col items-center justify-center creator-preview-bg rounded-lg p-4 border-2 border-cyan-500/30">
+                        <div id="astronaut-preview-container" class="w-full h-full"></div>
+                    </div>
+                    <div id="creator-options" class="md:w-2/3 flex flex-col">
+                        <div class="flex mb-4 border-b-2 border-cyan-500/50 space-x-4">
+                            <button data-tab="suitColor" class="creator-tab custom-tab active flex-1 py-2 text-xl font-bold">Baju</button>
+                            <button data-tab="hairStyle" class="creator-tab custom-tab flex-1 py-2 text-xl font-bold">Rambut</button>
+                            <button data-tab="face" class="creator-tab custom-tab flex-1 py-2 text-xl font-bold">Wajah</button>
+                        </div>
+                        <div id="options-panel-content" class="flex-grow overflow-y-auto pr-2">
+                           </div>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <button id="finish-creation-btn" class="btn-primary">Selesai & Luncurkan!</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-screen" class="screen hidden w-full h-full flex flex-col p-4">
+            <header class="glass-panel rounded-xl p-3 flex justify-between items-center mb-4">
+                <div class="flex items-center">
+                    <div id="avatar-in-game" class="w-16 h-16 rounded-full bg-gray-700 mr-3 border-2 border-cyan-400 p-1"></div>
+                    <h1 class="font-title text-xl md:text-3xl text-glow">Peta Tata Surya</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-xl font-bold flex items-center bg-black/30 px-4 py-2 rounded-full">
+                        <span class="text-yellow-300 text-3xl mr-2">💎</span>
+                        <span id="crystal-count">0 / 8</span>
+                    </div>
+                    <button id="gallery-btn" class="text-4xl hover:scale-110 transition-transform" title="Buka Galeri">🖼️</button>
+                </div>
+            </header>
+
+            <main class="flex-grow relative flex items-center justify-center">
+                <div class="sun w-24 h-24 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow-400" style="box-shadow: 0 0 50px #ffc107;"></div>
+                <div id="solar-system-container" class="orbit-container">
+                    </div>
+            </main>
+        </div>
+
+    </div>
+
+    <div id="modal-overlay" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
+        <div id="planet-info-modal" class="modal hidden flex-col w-full max-w-lg glass-panel rounded-2xl p-6 text-center"></div>
+        <div id="mini-game-modal" class="modal hidden flex-col w-full max-w-3xl glass-panel rounded-2xl p-6"></div>
+        <div id="gallery-modal" class="modal hidden flex-col w-full max-w-4xl h-5/6 glass-panel rounded-2xl p-6"></div>
+    </div>
+
+    <script>
+    class Game {
+        constructor() {
+            this.state = {};
+            this.dom = {};
+            this.creatorData = this.getCreatorData();
+            this.planetData = this.getPlanetData();
+            this.currentMiniGame = null;
+            this.activeCreatorTab = 'suitColor';
+
+            this.bindDOM();
+            this.resetState();
+        }
+
+        bindDOM() {
+            this.dom = {
+                app: document.getElementById('app-container'),
+                screens: {
+                    start: document.getElementById('start-screen'),
+                    creator: document.getElementById('creator-screen'),
+                    game: document.getElementById('game-screen'),
+                },
+                modalOverlay: document.getElementById('modal-overlay'),
+                modals: {
+                    planetInfo: document.getElementById('planet-info-modal'),
+                    miniGame: document.getElementById('mini-game-modal'),
+                    gallery: document.getElementById('gallery-modal'),
+                },
+                buttons: {
+                    startNewGame: document.getElementById('start-new-game-btn'),
+                    toggleSound: document.getElementById('toggle-sound-btn'),
+                    finishCreation: document.getElementById('finish-creation-btn'),
+                    gallery: document.getElementById('gallery-btn'),
+                },
+                audio: {
+                    bgMusic: document.getElementById('bg-music'),
+                    click: document.getElementById('click-sound'),
+                    success: document.getElementById('success-sound'),
+                    fail: document.getElementById('fail-sound'),
+                },
+                creator: {
+                    preview: document.getElementById('astronaut-preview-container'),
+                    optionsPanel: document.getElementById('options-panel-content'),
+                    tabs: document.querySelectorAll('.creator-tab'),
+                },
+                gameplay: {
+                    solarSystem: document.getElementById('solar-system-container'),
+                    crystalCount: document.getElementById('crystal-count'),
+                    avatarInGame: document.getElementById('avatar-in-game'),
+                }
+            };
+        }
+
+        init() {
+            this.loadGame();
+            this.setupEventListeners();
+            this.updateSoundUI();
+            this.showScreen('start');
+        }
+
+        resetState() {
+            this.state = {
+                soundEnabled: true,
+                astronaut: {
+                    suitColor: '#3b82f6',
+                    hairStyle: 1,
+                    face: 1,
+                },
+                crystals: 0,
+                completedPlanets: [],
+            };
+        }
+
+        saveGame() {
+            localStorage.setItem('misiBintangCeriaSave', JSON.stringify(this.state));
+        }
+
+        loadGame() {
+            const savedData = localStorage.getItem('misiBintangCeriaSave');
+            if (savedData) {
+                this.state = JSON.parse(savedData);
+            }
+        }
+
+        setupEventListeners() {
+            this.dom.buttons.toggleSound.addEventListener('click', () => this.toggleSound());
+
+            this.dom.buttons.startNewGame.addEventListener('click', () => {
+                this.playSound('click');
+                // AUDIO FIX: Start music only after user interaction
+                if (this.state.soundEnabled && this.dom.audio.bgMusic.paused) {
+                    this.dom.audio.bgMusic.play().catch(e => console.error("Audio play failed:", e));
+                }
+                this.resetState();
+                this.setupCreator();
+                this.showScreen('creator');
+            });
+
+            this.dom.buttons.finishCreation.addEventListener('click', () => {
+                this.playSound('success');
+                this.saveGame();
+                this.startGame();
+            });
+
+            this.dom.buttons.gallery.addEventListener('click', () => {
+                this.playSound('click');
+                this.showGalleryModal();
+            });
+
+            this.dom.creator.tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    this.activeCreatorTab = tab.dataset.tab;
+                    this.renderCreatorOptions();
+                });
+            });
+        }
+
+        showScreen(screenName) {
+            Object.values(this.dom.screens).forEach(s => s.classList.add('hidden'));
+            this.dom.screens[screenName].classList.remove('hidden');
+        }
+
+        showModal(modalName, contentHTML) {
+            Object.values(this.dom.modals).forEach(m => m.classList.add('hidden'));
+            const modal = this.dom.modals[modalName];
+            modal.innerHTML = contentHTML;
+            modal.classList.remove('hidden');
+            this.dom.modalOverlay.classList.remove('hidden');
+        }
+
+        hideAllModals() {
+            this.dom.modalOverlay.classList.add('hidden');
+        }
+
+        toggleSound() {
+            this.state.soundEnabled = !this.state.soundEnabled;
+            this.updateSoundUI();
+            if (this.state.soundEnabled && this.dom.audio.bgMusic.paused) {
+                 this.dom.audio.bgMusic.play().catch(e => {});
+            } else {
+                this.dom.audio.bgMusic.pause();
+            }
+            this.saveGame();
+        }
+
+        updateSoundUI() {
+            this.dom.buttons.toggleSound.textContent = this.state.soundEnabled ? '🔊' : '🔇';
+            this.dom.audio.bgMusic.volume = 0.3;
+        }
+
+        playSound(soundName) {
+            if (this.state.soundEnabled && this.dom.audio[soundName]) {
+                const sound = this.dom.audio[soundName];
+                sound.currentTime = 0;
+                sound.volume = soundName === 'click' ? 0.5 : 1.0;
+                sound.play();
+            }
+        }
+
+        // --- Character Creator Rework ---
+        setupCreator() {
+            this.activeCreatorTab = 'suitColor';
+            this.renderCreatorOptions();
+            this.renderCreatorPreview();
+        }
+
+        renderCreatorOptions() {
+            this.dom.creator.tabs.forEach(t => {
+                t.classList.toggle('active', t.dataset.tab === this.activeCreatorTab);
+            });
+
+            const key = this.activeCreatorTab;
+            const data = this.creatorData.astronaut.options[key];
+            const stateValue = this.state.astronaut[key];
+            let html = `<div class="p-2">
+                            <h3 class="font-bold text-2xl mb-4 text-cyan-300">${data.label}</h3>`;
+            
+            if (key === 'suitColor') {
+                html += `<div class="flex items-center gap-4">
+                            <input type="color" id="suit-color-picker" value="${stateValue}" class="choice-item">
+                            <label for="suit-color-picker" class="text-lg">Pilih Warnamu</label>
+                         </div>`;
+            } else {
+                html += `<div class="grid grid-cols-3 md:grid-cols-4 gap-4">`;
+                data.items.forEach((item, index) => {
+                    const valueAttr = index + 1;
+                    const isSelected = (stateValue == valueAttr);
+                    html += `<button class="choice-item aspect-square rounded-lg bg-black/30 p-1 flex items-center justify-center ${isSelected ? 'selected' : ''}" data-key="${key}" data-value="${valueAttr}">${item}</button>`;
+                });
+                html += `</div>`;
+            }
+            html += `</div>`;
+            this.dom.creator.optionsPanel.innerHTML = html;
+            this.addCreatorListeners();
+        }
+        
+        addCreatorListeners() {
+            if (this.activeCreatorTab === 'suitColor') {
+                const colorPicker = document.getElementById('suit-color-picker');
+                colorPicker.addEventListener('input', (e) => {
+                    this.state.astronaut.suitColor = e.target.value;
+                    this.renderCreatorPreview();
+                });
+            } else {
+                this.dom.creator.optionsPanel.querySelectorAll('.choice-item').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        this.playSound('click');
+                        const { key, value } = e.currentTarget.dataset;
+                        this.state.astronaut[key] = parseInt(value);
+                        this.renderCreatorOptions();
+                        this.renderCreatorPreview();
+                    });
+                });
+            }
+        }
+
+        renderCreatorPreview() {
+            const astro = this.state.astronaut;
+            const data = this.creatorData.astronaut.options;
+            const hair = data.hairStyle.items[astro.hairStyle - 1];
+            const face = data.face.items[astro.face - 1];
+            this.dom.creator.preview.innerHTML = this.creatorData.astronaut.baseSVG(astro.suitColor, hair, face);
+        }
+
+        // --- Game Logic ---
+        startGame() {
+            this.showScreen('game');
+            this.renderSolarSystem();
+            this.updateHUD();
+        }
+
+        updateHUD() {
+            this.dom.gameplay.crystalCount.textContent = `${this.state.crystals} / 8`;
+            const astro = this.state.astronaut;
+            const face = this.creatorData.astronaut.options.face.items[astro.face - 1];
+            this.dom.gameplay.avatarInGame.innerHTML = this.creatorData.astronaut.headSVG(astro.suitColor, face);
+        }
+
+        renderSolarSystem() {
+            let html = '';
+            const containerSize = this.dom.gameplay.solarSystem.offsetWidth;
+
+            this.planetData.forEach((p) => {
+                const orbitRadius = containerSize * (p.orbit / 100);
+                const completedClass = this.state.completedPlanets.includes(p.id) ? 'opacity-50' : '';
+
+                html += `<div class="orbit" style="width:${p.orbit * 2}%; height:${p.orbit * 2}%;"></div>`;
+                html += `
+                    <div id="${p.id}" class="planet ${completedClass}" style="
+                        width:${p.size}px; height:${p.size}px;
+                        background-color:${p.color};
+                        --orbit-radius: ${orbitRadius}px;
+                        animation-duration: ${p.duration}s;
+                        animation-delay: -${p.angle / 360 * p.duration}s;
+                    ">
+                        ${this.state.completedPlanets.includes(p.id) ? '<span class="text-3xl">✔️</span>' : ''}
+                        <div class="planet-label">${p.name}</div>
+                    </div>`;
+            });
+            this.dom.gameplay.solarSystem.innerHTML = html;
+
+            document.querySelectorAll('.planet').forEach(p => {
+                p.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.handlePlanetClick(p.id);
+                });
+            });
+        }
+
+        handlePlanetClick(planetId) {
+            this.playSound('click');
+            const data = this.planetData.find(p => p.id === planetId);
+            
+            let missionButtonHTML = `<button id="start-mission-btn" class="btn-primary w-full mt-6">Mulai Misi!</button>`;
+            if (this.state.completedPlanets.includes(planetId)) {
+                missionButtonHTML = `<p class="mt-6 text-green-400 font-bold text-xl">✔️ Misi Selesai!</p>`;
+            }
+
+            const content = `
+                <h2 class="font-title text-4xl text-glow mb-4">${data.name}</h2>
+                <p class="text-lg mb-6">${data.facts[0]}</p>
+                <div class="grid grid-cols-3 gap-4 text-center mb-6 p-4 bg-black/20 rounded-lg">
+                    <div><p class="text-sm text-cyan-300">TIPE</p><p class="text-xl font-bold">${data.type}</p></div>
+                    <div><p class="text-sm text-cyan-300">SUHU</p><p class="text-xl font-bold">${data.temp}</p></div>
+                    <div><p class="text-sm text-cyan-300">SATELIT</p><p class="text-xl font-bold">${data.moons}</p></div>
+                </div>
+                ${missionButtonHTML}
+                <button id="close-info-btn" class="absolute top-4 right-4 text-3xl">&times;</button>
+            `;
+            this.showModal('planetInfo', content);
+
+            document.getElementById('close-info-btn').addEventListener('click', () => this.hideAllModals());
+            if (!this.state.completedPlanets.includes(planetId)) {
+                document.getElementById('start-mission-btn').addEventListener('click', () => {
+                    this.playSound('click');
+                    this.startMiniGame(planetId);
+                });
+            }
+        }
+
+        startMiniGame(planetId) {
+            const data = this.planetData.find(p => p.id === planetId);
+            const content = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-title text-3xl text-glow">Misi di Planet ${data.name}</h2>
+                    <button id="close-game-btn" class="text-3xl">&times;</button>
+                </div>
+                <div id="game-instructions" class="text-center mb-4 text-lg">${data.game.instructions}</div>
+                <div id="game-area" class="bg-black/30 rounded-lg aspect-video w-full"></div>`;
+            this.showModal('miniGame', content);
+            document.getElementById('close-game-btn').addEventListener('click', () => this.hideAllModals());
+
+            if (this.currentMiniGame && this.currentMiniGame.destroy) this.currentMiniGame.destroy();
+            const gameArea = document.getElementById('game-area');
+            const gameClass = data.game.type === 'quiz' ? QuizGame : SortingGame;
+            this.currentMiniGame = new gameClass(gameArea, data.game, (result) => this.endMiniGame(planetId, result));
+        }
+
+        endMiniGame(planetId, success) {
+            this.hideAllModals();
+            if (success) {
+                this.playSound('success');
+                if (!this.state.completedPlanets.includes(planetId)) {
+                    this.state.crystals++;
+                    this.state.completedPlanets.push(planetId);
+                    this.updateHUD();
+                    this.renderSolarSystem();
+                    this.saveGame();
+                }
+            } else {
+                this.playSound('fail');
+            }
+        }
+
+        showGalleryModal() {
+            let itemsHTML = '';
+            if (this.state.completedPlanets.length === 0) {
+                 itemsHTML = `<p class="text-center text-xl col-span-full">Kumpulkan Kristal untuk membuka data planet!</p>`;
+            } else {
+                this.planetData.forEach(pdata => {
+                    const isUnlocked = this.state.completedPlanets.includes(pdata.id);
+                    itemsHTML += `
+                        <div class="text-center p-4 bg-black/${isUnlocked ? '30' : '50'} rounded-lg ${isUnlocked ? '' : 'opacity-50'}">
+                            <div class="w-16 h-16 rounded-full mx-auto mb-2" style="background-color:${pdata.color};"></div>
+                            <p class="font-bold">${isUnlocked ? pdata.name : '???'}</p>
+                         </div>`;
+                });
+            }
+
+            const content = `
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="font-title text-3xl text-glow">Galeri Pengetahuan</h2>
+                    <button id="close-gallery-btn" class="text-3xl">&times;</button>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 overflow-y-auto h-full pr-2">
+                    ${itemsHTML}
+                </div>
+            `;
+            this.showModal('gallery', content);
+            document.getElementById('close-gallery-btn').addEventListener('click', () => this.hideAllModals());
+        }
+
+        getCreatorData() {
+             return {
+                astronaut: {
+                    baseSVG: (suitColor, hair, face) => `<svg viewBox="0 0 150 250"><defs><g id="helmet"><circle cx="75" cy="60" r="50" fill="#e5e7eb"/><path d="M45 40 C 40 60, 40 80, 45 100" stroke="#c0c0c0" stroke-width="3" fill="none"/><circle cx="75" cy="60" r="40" fill="#60a5fa" opacity="0.5"/></g><g id="body"><path d="M40 100 C 20 120, 20 200, 50 220 L 100 220 C 130 200, 130 120, 110 100 Z" fill="${suitColor}"/><rect x="65" y="110" width="20" height="50" fill="#b0b0b0" rx="5"/></g></defs><use href="#body"/><use href="#helmet"/><g transform="translate(0, 5)">${hair}</g>${face}</svg>`,
+                    headSVG: (suitColor, face) => `<svg viewBox="0 0 150 150"><g transform="translate(0, 15)"><circle cx="75" cy="60" r="50" fill="#e5e7eb"/><circle cx="75" cy="60" r="40" fill="${suitColor}" opacity="0.8"/>${face}</g></svg>`,
+                    options: {
+                        suitColor: { label: "Warna Baju" },
+                        hairStyle: { label: "Gaya Rambut", items: [`<path d="M45 40 C 60 15, 90 15, 105 40 Q 105 60, 45 60 Z" fill="#facc15"/>`, `<path d="M45 35 C 40 10, 110 10, 105 35 L 100 60 L 50 60 Z" fill="#a16207"/>`, `<path d="M50 30 L100 30 L100 10 L85 25 L75 10 L65 25 Z" fill="#1e293b"/>`] },
+                        face: { label: "Ekspresi Wajah", items: [`<g transform="translate(0, 5)"><circle cx="65" cy="60" r="5" fill="black"/><circle cx="85" cy="60" r="5" fill="black"/><path d="M65 75 Q75 85 85 75" stroke="black" fill="none" stroke-width="3" stroke-linecap="round"/></g>`, `<g transform="translate(0, 5)"><rect x="60" y="55" width="8" height="12" fill="black"/><rect x="82" y="55" width="8" height="12" fill="black"/><rect x="68" y="78" width="14" height="4" rx="2" fill="black"/></g>`] }
+                    }
+                }
+            };
+        }
+
+        getPlanetData() {
+            // BUG FIX: Randomize starting angle and adjust orbit/duration for better visual separation
+            const randomAngle = () => Math.floor(Math.random() * 360);
+            return [
+                { id: 'mercury', name: 'Merkurius', color: '#a1a1aa', size: 25, orbit: 15, angle: randomAngle(), duration: 30, type: 'Bebatuan', temp: '167°C', moons: '0', facts: ['Merkurius adalah planet terkecil di Tata Surya.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet apa yang paling dekat dengan Matahari?', options: ['Venus', 'Bumi', 'Merkurius', 'Mars'], answer: 'Merkurius'} },
+                { id: 'venus', name: 'Venus', color: '#fcd34d', size: 35, orbit: 22, angle: randomAngle(), duration: 45, type: 'Bebatuan', temp: '462°C', moons: '0', facts: ['Arah rotasi Venus berlawanan dengan planet lain.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet manakah yang paling panas di Tata Surya?', options: ['Merkurius', 'Venus', 'Mars', 'Jupiter'], answer: 'Venus'} },
+                { id: 'earth', name: 'Bumi', color: '#3b82f6', size: 40, orbit: 30, angle: randomAngle(), duration: 60, type: 'Bebatuan', temp: '15°C', moons: '1', facts: ['Bumi adalah satu-satunya planet yang diketahui memiliki kehidupan.'], game: {type: 'sorting', instructions: 'Pilah sampah ke tempat yang benar untuk menjaga Bumi!', items: [{name:'botol plastik', type:'anorganik'}, {name:'sisa apel', type:'organik'}, {name:'kertas', type:'anorganik'}], bins:['organik', 'anorganik']} },
+                { id: 'mars', name: 'Mars', color: '#dc2626', size: 30, orbit: 38, angle: randomAngle(), duration: 75, type: 'Bebatuan', temp: '-63°C', moons: '2', facts: ['Mars dikenal sebagai Planet Merah karena kaya akan besi oksida.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Gunung tertinggi di Tata Surya, Olympus Mons, ada di planet...', options: ['Bumi', 'Mars', 'Jupiter', 'Saturnus'], answer: 'Mars'} },
+                { id: 'jupiter', name: 'Jupiter', color: '#f97316', size: 70, orbit: 55, angle: randomAngle(), duration: 120, type: 'Raksasa Gas', temp: '-145°C', moons: '79+', facts: ['Jupiter adalah planet terbesar di Tata Surya.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Bintik Merah Raksasa adalah badai besar di planet...', options: ['Saturnus', 'Uranus', 'Neptunus', 'Jupiter'], answer: 'Jupiter'} },
+                { id: 'saturn', name: 'Saturnus', color: '#f59e0b', size: 60, orbit: 70, angle: randomAngle(), duration: 150, type: 'Raksasa Gas', temp: '-178°C', moons: '82+', facts: ['Cincin Saturnus terbuat dari miliaran bongkahan es dan batu.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet manakah yang terkenal karena cincinnya yang indah?', options: ['Jupiter', 'Saturnus', 'Bumi', 'Neptunus'], answer: 'Saturnus'} },
+                { id: 'uranus', name: 'Uranus', color: '#67e8f9', size: 50, orbit: 85, angle: randomAngle(), duration: 180, type: 'Raksasa Es', temp: '-224°C', moons: '27', facts: ['Uranus berotasi pada sisinya, seperti bola yang menggelinding.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet manakah yang berotasi miring?', options: ['Uranus', 'Mars', 'Venus', 'Merkurius'], answer: 'Uranus'} },
+                { id: 'neptune', name: 'Neptunus', color: '#1d4ed8', size: 50, orbit: 95, angle: randomAngle(), duration: 210, type: 'Raksasa Es', temp: '-214°C', moons: '14', facts: ['Neptunus adalah planet yang paling berangin di Tata Surya.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet terjauh dari Matahari adalah...', options: ['Uranus', 'Saturnus', 'Neptunus', 'Jupiter'], answer: 'Neptunus'} }
+            ];
+        }
+    }
+
+    // Mini-Game Classes (Quiz and Sorting)
+    class QuizGame {
+        constructor(container, config, onComplete) {
+            this.container = container;
+            this.config = config;
+            this.onComplete = onComplete;
+            this.render();
+        }
+        render() {
+            let optionsHTML = this.config.options.map(opt => `<button class="btn-primary w-full text-base" data-answer="${opt}">${opt}</button>`).join('');
+            this.container.innerHTML = `<div class="p-4 flex flex-col items-center justify-center h-full text-center"><h3 class="text-2xl font-bold mb-6">${this.config.question}</h3><div class="grid grid-cols-2 gap-4 w-full max-w-md">${optionsHTML}</div></div>`;
+            this.container.querySelectorAll('button').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    this.onComplete(btn.dataset.answer === this.config.answer);
+                });
+            });
+        }
+        destroy() { this.container.innerHTML = ''; }
+    }
+
+    class SortingGame {
+        constructor(container, config, onComplete) {
+            this.container = container;
+            this.config = config;
+            this.onComplete = onComplete;
+            this.sortedCount = 0;
+            this.render();
+        }
+        render() {
+            let itemsHTML = this.config.items.map((item, i) => `<div class="p-2 bg-blue-500 rounded cursor-grab text-center font-semibold" draggable="true" data-type="${item.type}" data-id="${i}">${item.name}</div>`).join('');
+            let binsHTML = this.config.bins.map(bin => `<div class="sorting-bin w-1/2 p-4 border-2 border-dashed rounded h-32 flex items-center justify-center text-xl uppercase" data-bin-type="${bin}">${bin}</div>`).join('');
+            this.container.innerHTML = `<div class="p-4 flex flex-col items-center justify-around h-full"><div id="sort-items" class="flex gap-4 mb-6">${itemsHTML}</div><div id="sort-bins" class="flex gap-4 w-full">${binsHTML}</div></div>`;
+            this.addDragDropListeners();
+        }
+        addDragDropListeners() {
+            const items = Array.from(this.container.querySelectorAll('#sort-items div'));
+            const bins = this.container.querySelectorAll('#sort-bins div');
+            items.forEach(item => {
+                item.addEventListener('dragstart', e => {
+                    e.dataTransfer.setData('text/plain', e.target.dataset.id);
+                    setTimeout(() => item.classList.add('opacity-50'), 0);
+                });
+                item.addEventListener('dragend', () => item.classList.remove('opacity-50'));
+            });
+            bins.forEach(bin => {
+                bin.addEventListener('dragover', e => { e.preventDefault(); bin.classList.add('drag-over'); });
+                bin.addEventListener('dragleave', () => bin.classList.remove('drag-over'));
+                bin.addEventListener('drop', e => {
+                    e.preventDefault();
+                    bin.classList.remove('drag-over');
+                    const itemId = e.dataTransfer.getData('text/plain');
+                    const draggedItem = items.find(i => i.dataset.id === itemId);
+                    if(draggedItem && bin.dataset.binType === draggedItem.dataset.type) {
+                        draggedItem.classList.add('hidden');
+                        this.sortedCount++;
+                        if (this.sortedCount === this.config.items.length) {
+                            this.onComplete(true);
+                        }
+                    } else {
+                        this.onComplete(false);
+                    }
+                });
+            });
+        }
+        destroy() { this.container.innerHTML = ''; }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const game = new Game();
+        game.init();
+    });
+    </script>
+</body>
+</html>
