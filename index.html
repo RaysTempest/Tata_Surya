@@ -3,711 +3,1166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Misi Bintang Ceria (Versi Deluxe)</title>
+    <title>Petualangan Pengetahuan Ultimate - Edisi Sempurna</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fredoka+One&display=swap" rel="stylesheet">
     <style>
+        /* --- Root Variables for Theming --- */
         :root {
-            --bg-deep-space: #01001a;
-            --accent-glow: #00ffff;
-            --font-title: 'Fredoka One', cursive;
-            --font-body: 'Poppins', sans-serif;
+            --bg-color: #f0f9ff;
+            --text-color: #0c4a6e;
+            --card-bg-color: #ffffff;
+            --modal-bg-color: #ffffff;
+            --border-color: #e0e7ff;
+            --header-bg: rgba(255, 255, 255, 0.7);
+            --locked-filter: grayscale(1);
+            --pattern-url: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g fill="%23a8c5ff" fill-opacity="0.1"><circle cx="50" cy="50" r="5" /><circle cx="10" cy="10" r="2" /><circle cx="90" cy="90" r="3" /><circle cx="10" cy="90" r="4" /><circle cx="90" cy="10" r="2" /></g></svg>');
         }
-
-        body {
-            font-family: var(--font-body);
-            background-color: var(--bg-deep-space);
-            background-image:
-                radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-                radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px);
-            background-size: 550px 550px, 350px 350px;
-            background-position: 0 0, 40px 60px;
-            animation: stars 200s linear infinite;
-            overflow: hidden;
-            color: white;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-
-        @keyframes stars {
-            from { background-position: 0 0, 40px 60px; }
-            to { background-position: -5000px 2500px, -4000px 2000px; }
-        }
-
-        .font-title { font-family: var(--font-title); }
-        .text-glow { text-shadow: 0 0 8px var(--accent-glow), 0 0 10px var(--accent-glow); }
-        .hidden { display: none !important; }
-
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(0, 255, 255, 0.25);
-            box-shadow: 0 0 40px rgba(0, 255, 255, 0.1);
-        }
-
-        .btn-primary {
-            font-family: var(--font-title);
-            background: linear-gradient(45deg, #00c6ff, #0072ff);
-            border: none;
-            border-radius: 50px;
-            padding: 1rem 2rem;
-            color: white;
-            font-size: 1.25rem;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 0 15px rgba(0, 198, 255, 0.5), inset 0 -2px 5px rgba(0,0,0,0.2);
-            transform: scale(1);
-        }
-        .btn-primary:hover {
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 0 25px rgba(0, 198, 255, 0.8), inset 0 -2px 5px rgba(0,0,0,0.2);
-        }
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-
-        .orbit-container {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90vmin;
-            height: 90vmin;
-        }
-
-        .orbit {
-            position: absolute;
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .planet {
-            position: absolute;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            animation: orbit-anim linear infinite;
-        }
-        @keyframes orbit-anim {
-            from { transform: rotate(0deg) translateX(var(--orbit-radius)) rotate(0deg); }
-            to { transform: rotate(360deg) translateX(var(--orbit-radius)) rotate(-360deg); }
-        }
-
-        .planet:hover {
-            animation-play-state: paused;
-            transform: scale(1.3) !important;
-            box-shadow: 0 0 20px #fff, 0 0 30px var(--accent-glow);
-        }
-        .planet-label {
-            position: absolute;
-            bottom: -35px;
-            font-size: 14px;
-            font-weight: 600;
-            color: #fff;
-            background-color: rgba(0,0,0,0.7);
-            padding: 4px 10px;
-            border-radius: 10px;
-            white-space: nowrap;
-        }
-
-        .screen, .modal { animation: fadeIn 0.5s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-
-        .creator-preview-bg {
-            background-image: url('https://i.ibb.co/6rP1tC3/bg-prev.png');
-            background-size: cover;
-            background-position: center;
-        }
-
-        .choice-item {
-            border: 3px solid transparent;
-            transition: all 0.2s ease-in-out;
-            border-radius: 12px;
-        }
-        .choice-item.selected {
-            border-color: var(--accent-glow);
-            transform: scale(1.1);
-            box-shadow: 0 0 10px var(--accent-glow);
-        }
-
-        .sorting-bin.drag-over {
-            background-color: rgba(0, 255, 255, 0.2);
-            border-style: solid;
+        /* --- Dark Theme --- */
+        body.dark {
+            --bg-color: #0b1120;
+            --text-color: #d1d5db;
+            --card-bg-color: #1f2937;
+            --modal-bg-color: #111827;
+            --border-color: #374151;
+            --header-bg: rgba(31, 41, 55, 0.8);
+            --locked-filter: grayscale(1) invert(0.75);
+            --pattern-url: url('data:image/svg+xml;utf8,<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><g fill="%234b5563" fill-opacity="0.2"><circle cx="50" cy="50" r="5" /><circle cx="10" cy="10" r="2" /><circle cx="90" cy="90" r="3" /><circle cx="10" cy="90" r="4" /><circle cx="90" cy="10" r="2" /></g></svg>');
         }
         
-        .custom-tab {
-            border-bottom: 4px solid transparent;
-            transition: all 0.3s ease;
+        /* --- General Styling --- */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-color); 
+            color: var(--text-color); 
+            transition: background-color 0.5s, color 0.5s;
+            background-image: var(--pattern-url);
         }
-        .custom-tab.active {
-            border-bottom-color: var(--accent-glow);
-            color: var(--accent-glow);
+        .font-brand { font-family: 'Fredoka One', cursive; }
+        .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card-hover:hover { transform: translateY(-10px) scale(1.05); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+        .screen, .modal-overlay { display: none; }
+        .screen.active, .modal-overlay.active { display: flex; }
+        
+        /* --- Animations --- */
+        .screen.active { animation: fadeIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        .modal-overlay.active > .modal-content { animation: scaleUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+        .star-animation { animation: star-pop 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+        .point-animation { 
+            position: fixed; top: 50%; left: 50%; 
+            font-size: 2.5rem; font-weight: bold; color: #f59e0b; 
+            z-index: 100; pointer-events: none; 
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: floatUpAndFade 1.5s ease-out forwards;
         }
-        input[type="color"] {
-            -webkit-appearance: none;
-            width: 50px;
-            height: 50px;
-            border: none;
-            padding: 0;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-        }
-        input[type="color"]::-webkit-color-swatch {
-            border: 2px solid #fff;
-            border-radius: 50%;
-        }
+        .animate-shake { animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both; }
+
+        /* --- Keyframes --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes scaleUp { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes floatUpAndFade { from { opacity: 1; transform: translate(-50%, -50%) scale(1); } to { opacity: 0; transform: translate(-50%, -250%) scale(1.5); } }
+        @keyframes star-pop { 0% { transform: scale(0) rotate(-180deg); opacity: 0; } 60% { transform: scale(1.5) rotate(15deg); } 100% { transform: scale(1) rotate(0deg); opacity: 1; } }
+        @keyframes shake { 10%, 90% { transform: translate3d(-1px, 0, 0); } 20%, 80% { transform: translate3d(2px, 0, 0); } 30%, 50%, 70% { transform: translate3d(-4px, 0, 0); } 40%, 60% { transform: translate3d(4px, 0, 0); } }
+
+        /* --- Component Specific Styles --- */
+        .avatar { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: white; transition: transform 0.3s; }
+        .avatar:hover { transform: scale(1.1); }
+        .avatar-selection { cursor: pointer; border: 4px solid transparent; border-radius: 50%; transition: all 0.2s ease; position: relative; }
+        .avatar-selection.selected { border-color: #2563eb; transform: scale(1.1); box-shadow: 0 0 15px rgba(37, 99, 235, 0.5); }
+        .shop-item { cursor: pointer; border: 4px solid var(--border-color); border-radius: 1.5rem; transition: all 0.2s ease; position: relative; background-color: var(--card-bg-color); }
+        .shop-item:hover { transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .shop-item.owned { border-color: #16a34a; }
+        .shop-item.equipped { border-color: #2563eb; box-shadow: 0 0 20px rgba(37, 99, 235, 0.6); }
+        .shop-item.locked::after { content: '🔒'; position: absolute; top: 8px; right: 8px; font-size: 1.5rem; background: rgba(0,0,0,0.4); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; }
+        .price-tag { position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); background: #fbbf24; color: #78350f; font-weight: bold; padding: 2px 10px; border-radius: 99px; font-size: 0.9rem; border: 2px solid white; }
+        
+        /* Toggle Switch Style */
+        .toggle-checkbox { transition: all 0.2s ease; }
+        .toggle-checkbox:checked { transform: translateX(100%); border-color: #2563eb; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #2563eb; }
     </style>
 </head>
-<body class="w-screen h-screen">
+<body class="text-gray-800">
 
-    <audio id="bg-music" loop src="https://assets.mixkit.co/music/preview/mixkit-a-very-happy-christmas-897.mp3" preload="auto"></audio>
-    <audio id="click-sound" src="https://cdn.pixabay.com/download/audio/2021/08/04/audio_c6ccf3235f.mp3" preload="auto"></audio>
-    <audio id="success-sound" src="https://cdn.pixabay.com/download/audio/2022/01/21/audio_a72f053a80.mp3" preload="auto"></audio>
-    <audio id="fail-sound" src="https://cdn.pixabay.com/download/audio/2022/03/10/audio_b2f3493433.mp3" preload="auto"></audio>
+    <div id="app" class="min-h-screen flex flex-col items-center justify-center p-4 overflow-hidden">
 
-    <div id="app-container" class="w-full h-full">
+        <!-- ===== SCREENS ===== -->
+        <div id="loading-screen" class="screen active text-center flex-col w-full">
+            <h1 class="font-brand text-5xl md:text-7xl text-sky-700 mb-4">Petualangan Pengetahuan</h1>
+            <div class="animate-pulse text-2xl" style="color: var(--text-color);">Mempersiapkan Petualangan...</div>
+        </div>
+        
+        <div id="user-selection-screen" class="screen text-center flex-col w-full max-w-4xl">
+            <h1 class="font-brand text-5xl md:text-7xl text-sky-700 mb-4">Petualangan Pengetahuan</h1>
+            <p class="text-lg md:text-xl mb-8" style="color: var(--text-color);">Siapa yang akan berpetualang hari ini?</p>
+            <div id="user-list-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8"></div>
+            <button id="add-new-user-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full shadow-lg transform hover:scale-110 transition-transform duration-300 text-xl">+ Tambah Pengguna Baru</button>
+        </div>
 
-        <div id="start-screen" class="screen flex flex-col items-center justify-center w-full h-full text-center p-4">
-            <h1 class="font-title text-7xl md:text-8xl text-glow drop-shadow-lg">Misi Bintang Ceria</h1>
-            <p class="text-xl md:text-2xl mt-4 max-w-2xl">Selamat datang, Astronot! Galaksi membutuhkanmu untuk mengusir "Kabut Lupa" dengan mengumpulkan Kristal Pengetahuan.</p>
-            <div class="mt-10">
-                <button id="start-new-game-btn" class="btn-primary">Mulai Misi Baru</button>
+        <div id="name-entry-screen" class="screen flex-col w-full max-w-lg">
+            <div class="p-8 rounded-3xl shadow-2xl w-full text-center" style="background-color: var(--card-bg-color);">
+                 <h1 class="font-brand text-4xl text-sky-700 mb-2">Buat Profil Baru</h1>
+                 <p class="mb-6" style="color: var(--text-color);">Masukkan nama dan pilih avatarmu!</p>
+                 <input type="text" id="player-name-input" placeholder="Contoh: Budi" class="text-center text-2xl p-4 border-2 rounded-xl shadow-inner focus:border-orange-500 focus:ring-orange-500 mb-6 w-full" style="border-color: var(--border-color); background-color: var(--bg-color);">
+                 <p class="font-semibold mb-4">Pilih Avatar:</p>
+                 <div id="avatar-selection-container" class="flex justify-center gap-4 mb-8"></div>
+                 <div class="flex gap-4">
+                    <button id="cancel-new-user-btn" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-3 px-6 rounded-xl shadow-md transition-transform duration-300">Batal</button>
+                    <button id="next-to-level-btn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-transform duration-300 disabled:bg-gray-400" disabled>Lanjut</button>
+                 </div>
             </div>
-            <div class="absolute bottom-4 right-4 flex items-center space-x-2 p-2 glass-panel rounded-full">
-                <span class="text-lg pl-2">Suara:</span>
-                <button id="toggle-sound-btn" class="text-3xl">🔊</button>
+        </div>
+        
+        <div id="jenjang-screen" class="screen text-center flex-col w-full max-w-3xl">
+            <h1 class="font-brand text-4xl md:text-6xl text-sky-700 mb-2">Pilih Jenjangmu</h1>
+            <p class="text-lg md:text-xl mb-8" id="jenjang-prompt-name" style="color: var(--text-color);"></p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-2xl">
+                <button data-jenjang="sd" class="jenjang-btn bg-green-500 hover:bg-green-600 text-white font-bold py-6 px-8 rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300 text-2xl"><span class="text-4xl block mb-2">🎓</span> SD</button>
+                <button data-jenjang="smp" class="jenjang-btn bg-blue-500 hover:bg-blue-600 text-white font-bold py-6 px-8 rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300 text-2xl"><span class="text-4xl block mb-2">📚</span> SMP</button>
+                <button data-jenjang="sma" class="jenjang-btn bg-purple-500 hover:bg-purple-600 text-white font-bold py-6 px-8 rounded-2xl shadow-lg transform hover:scale-105 transition-transform duration-300 text-2xl"><span class="text-4xl block mb-2">🔬</span> SMA</button>
             </div>
         </div>
 
-        <div id="creator-screen" class="screen hidden flex-col items-center justify-center w-full h-full p-4">
-            <div class="glass-panel rounded-2xl p-6 w-full max-w-6xl">
-                <h2 class="font-title text-4xl text-center text-glow mb-4">Buat Kru Angkasamu</h2>
-                <div class="flex flex-col md:flex-row gap-8 h-[70vh]">
-                    <div class="md:w-1/3 flex flex-col items-center justify-center creator-preview-bg rounded-lg p-4 border-2 border-cyan-500/30">
-                        <div id="astronaut-preview-container" class="w-full h-full"></div>
-                    </div>
-                    <div id="creator-options" class="md:w-2/3 flex flex-col">
-                        <div class="flex mb-4 border-b-2 border-cyan-500/50 space-x-4">
-                            <button data-tab="suitColor" class="creator-tab custom-tab active flex-1 py-2 text-xl font-bold">Baju</button>
-                            <button data-tab="hairStyle" class="creator-tab custom-tab flex-1 py-2 text-xl font-bold">Rambut</button>
-                            <button data-tab="face" class="creator-tab custom-tab flex-1 py-2 text-xl font-bold">Wajah</button>
+        <div id="map-screen" class="screen w-full max-w-7xl mx-auto flex-col">
+            <header class="flex flex-wrap justify-between items-center mb-6 px-4 gap-4 w-full backdrop-blur-sm p-4 rounded-2xl shadow" style="background-color: var(--header-bg)">
+                <div class="flex items-center gap-4 cursor-pointer" id="change-user-header">
+                    <div id="user-avatar-header" class="avatar w-16 h-16" title="Ganti Pengguna"></div>
+                    <div>
+                        <h2 class="font-brand text-2xl md:text-4xl" style="color: var(--text-color);" id="welcome-message"></h2>
+                        <div class="flex items-center gap-4">
+                            <p class="text-md md:text-lg font-bold text-amber-600" id="points-display"></p>
+                            <p class="text-md md:text-lg font-bold text-red-500" id="streak-display" title="Bonus login beruntun!"></p>
                         </div>
-                        <div id="options-panel-content" class="flex-grow overflow-y-auto pr-2">
-                           </div>
                     </div>
                 </div>
-                <div class="text-center mt-6">
-                    <button id="finish-creation-btn" class="btn-primary">Selesai & Luncurkan!</button>
-                </div>
-            </div>
-        </div>
-
-        <div id="game-screen" class="screen hidden w-full h-full flex flex-col p-4">
-            <header class="glass-panel rounded-xl p-3 flex justify-between items-center mb-4">
-                <div class="flex items-center">
-                    <div id="avatar-in-game" class="w-16 h-16 rounded-full bg-gray-700 mr-3 border-2 border-cyan-400 p-1"></div>
-                    <h1 class="font-title text-xl md:text-3xl text-glow">Peta Tata Surya</h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <div class="text-xl font-bold flex items-center bg-black/30 px-4 py-2 rounded-full">
-                        <span class="text-yellow-300 text-3xl mr-2">💎</span>
-                        <span id="crystal-count">0 / 8</span>
-                    </div>
-                    <button id="gallery-btn" class="text-4xl hover:scale-110 transition-transform" title="Buka Galeri">🖼️</button>
+                <div class="flex items-center gap-2 flex-wrap justify-center">
+                   <button id="shop-hub-btn" class="bg-violet-500 hover:bg-violet-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform hover:scale-105">🛍️ Toko</button>
+                   <button id="daily-mission-btn" class="bg-cyan-500 hover:bg-cyan-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform hover:scale-105">🎯 Misi</button>
+                   <button id="leaderboard-btn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform hover:scale-105">🥇 Peringkat</button>
+                   <button id="achievements-btn" class="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition-transform hover:scale-105">🏆 Prestasi</button>
+                   <button id="settings-btn" class="bg-gray-700 hover:bg-gray-800 text-white font-semibold p-2 rounded-lg shadow-md transition-transform hover:scale-105"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 0 2.12l-.15.1a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.38a2 2 0 0 0-.73-2.73l-.15-.1a2 2 0 0 1 0-2.12l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path><circle cx="12" cy="12" r="3"></circle></svg></button>
                 </div>
             </header>
-
-            <main class="flex-grow relative flex items-center justify-center">
-                <div class="sun w-24 h-24 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-yellow-400" style="box-shadow: 0 0 50px #ffc107;"></div>
-                <div id="solar-system-container" class="orbit-container">
-                    </div>
-            </main>
+            <div id="dunia-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 md:gap-8 w-full p-2 overflow-y-auto"></div>
         </div>
+        
+        <div id="submateri-screen" class="screen w-full max-w-5xl mx-auto flex-col">
+             <div class="flex justify-between items-center w-full mb-10">
+                <button id="back-to-worlds-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold p-3 rounded-full shadow-lg transform hover:scale-105 transition-transform">&larr;</button>
+                <h2 id="submateri-title" class="font-brand text-4xl md:text-5xl text-center"></h2>
+                <div></div>
+            </div>
+             <div id="submateri-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full p-2 overflow-y-auto"></div>
+       </div>
 
+       <div id="materi-screen" class="screen w-full max-w-4xl mx-auto p-6 md:p-10 rounded-2xl shadow-2xl flex-col" style="background-color: var(--card-bg-color);">
+           <div id="materi-content" class="w-full"></div>
+            <div class="text-center mt-8 w-full"><button id="back-to-submateri-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded-full shadow-lg transform hover:scale-105 transition-transform">&larr; Kembali Pilih Materi</button></div>
+       </div>
     </div>
 
-    <div id="modal-overlay" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50">
-        <div id="planet-info-modal" class="modal hidden flex-col w-full max-w-lg glass-panel rounded-2xl p-6 text-center"></div>
-        <div id="mini-game-modal" class="modal hidden flex-col w-full max-w-3xl glass-panel rounded-2xl p-6"></div>
-        <div id="gallery-modal" class="modal hidden flex-col w-full max-w-4xl h-5/6 glass-panel rounded-2xl p-6"></div>
+    <!-- ===== MODALS ===== -->
+    <div id="shop-hub-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 items-center justify-center p-4 z-50">
+        <div class="modal-content p-8 shadow-2xl w-full max-w-3xl rounded-2xl" style="background-color: var(--modal-bg-color);">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="font-brand text-4xl text-violet-600 text-center">Pusat Perbelanjaan</h3>
+                 <div class="font-bold text-amber-600 text-xl bg-amber-100 px-4 py-2 rounded-full" id="hub-points-display"></div>
+            </div>
+            <div id="shop-hub-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                <!-- Shop Links will be generated here -->
+            </div>
+            <button class="close-modal-btn mt-8 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full w-full transition-transform hover:scale-105">Tutup</button>
+        </div>
     </div>
+    
+    <div id="generic-shop-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 items-center justify-center p-4 z-50">
+        <div class="modal-content p-8 shadow-2xl w-full max-w-4xl rounded-2xl" style="background-color: var(--modal-bg-color);">
+            <div class="flex justify-between items-center mb-6">
+                <h3 id="generic-shop-title" class="font-brand text-3xl">Nama Toko</h3>
+                <div class="font-bold text-amber-600 text-xl bg-amber-100 px-4 py-2 rounded-full" id="generic-shop-points"></div>
+            </div>
+            <div id="generic-shop-container" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6 max-h-[60vh] overflow-y-auto p-4 rounded-lg" style="background-color: var(--bg-color);"></div>
+            <button class="close-modal-btn mt-6 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full shadow-lg w-full transition-transform hover:scale-105">Tutup</button>
+        </div>
+    </div>
+    
+    <div id="settings-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 items-center justify-center p-4 z-50">
+        <div class="modal-content p-6 shadow-2xl w-full max-w-md rounded-2xl" style="background-color: var(--modal-bg-color);">
+            <h3 class="font-brand text-3xl text-sky-700 text-center mb-4">Pengaturan</h3>
+            <div class="space-y-4">
+                <div class="flex justify-between items-center p-3 rounded-lg" style="background-color: var(--bg-color);">
+                    <label for="sound-toggle-btn" class="font-semibold">Efek Suara</label>
+                    <button id="sound-toggle-btn" class="text-2xl">🔊</button>
+                </div>
+                <div class="p-3 rounded-lg" style="background-color: var(--bg-color);">
+                     <span class="block font-semibold mb-2">Tema Tampilan</span>
+                     <div class="grid grid-cols-2 gap-2" id="theme-selector">
+                         <button data-theme="light" class="w-full p-2 border-2 rounded-lg font-semibold">☀️ Terang</button>
+                         <button data-theme="dark" class="w-full p-2 border-2 rounded-lg font-semibold">🌙 Gelap</button>
+                     </div>
+                </div>
+                <button id="reset-progress-btn" class="w-full text-left p-3 bg-red-100 hover:bg-red-200 text-red-700 rounded-lg font-bold">🗑️ Reset Progres Pengguna Ini</button>
+            </div>
+            <button class="close-modal-btn mt-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full w-full transition-transform hover:scale-105">Tutup</button>
+        </div>
+    </div>
+    
+    <div id="daily-bonus-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 items-center justify-center p-4 z-50">
+        <div class="modal-content p-8 shadow-2xl w-full max-w-sm text-center rounded-2xl" style="background-color: var(--modal-bg-color);">
+            <h3 class="font-brand text-3xl text-yellow-500">Bonus Login Harian!</h3>
+            <div class="text-7xl my-4 animate-bounce">💰</div>
+            <p class="text-lg mb-2">Kamu mendapatkan <strong class="text-amber-600" id="daily-bonus-amount">50 Poin</strong>!</p>
+            <p class="text-lg mb-4" id="daily-streak-bonus-text"></p>
+            <button class="close-modal-btn bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full w-full">Asyik!</button>
+        </div>
+    </div>
+
+    <div id="confirm-reset-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-70 items-center justify-center p-4 z-50">
+        <div class="modal-content p-8 shadow-2xl w-full max-w-sm text-center rounded-2xl" style="background-color: var(--modal-bg-color);">
+            <h3 class="font-bold text-2xl text-red-700">PERINGATAN!</h3>
+            <p class="my-4">Yakin ingin mereset progres untuk <strong id="reset-username-confirm"></strong>? Semua poin, item, dan lencana akan hilang selamanya.</p>
+            <div class="flex justify-center gap-4 mt-6">
+                <button id="cancel-reset-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-6 rounded-full">Batal</button>
+                <button id="confirm-reset-btn" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-6 rounded-full">Ya, Yakin</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fun-fact-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 items-center justify-center p-4 z-50">
+        <div class="modal-content p-8 shadow-2xl w-full max-w-md text-center rounded-2xl" style="background-color: var(--modal-bg-color);">
+            <h3 class="font-brand text-2xl text-sky-700">Fakta Seru!</h3>
+            <p id="fun-fact-text" class="my-4"></p>
+            <button id="close-fun-fact-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-6 rounded-full shadow-lg">Lanjut!</button>
+        </div>
+    </div>
+    
+    <div id="achievements-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 items-center justify-center p-4 z-50">
+        <div class="modal-content p-8 shadow-2xl w-full max-w-lg rounded-2xl" style="background-color: var(--modal-bg-color);">
+             <h3 class="font-brand text-3xl text-amber-600 text-center">🏆 Prestasiku 🏆</h3>
+            <div id="achievements-list" class="space-y-3 max-h-80 overflow-y-auto mt-4"></div>
+            <button class="close-modal-btn mt-6 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full shadow-lg w-full">Tutup</button>
+        </div>
+    </div>
+
+    <div id="leaderboard-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 items-center justify-center p-4 z-50">
+        <div class="modal-content p-8 shadow-2xl w-full max-w-lg rounded-2xl" style="background-color: var(--modal-bg-color);">
+            <h3 class="font-brand text-3xl text-yellow-600 text-center mb-4">🥇 Papan Peringkat 🥇</h3>
+            <div id="leaderboard-list" class="space-y-2 max-h-80 overflow-y-auto"></div>
+            <button class="close-modal-btn mt-6 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full shadow-lg w-full">Tutup</button>
+        </div>
+    </div>
+    
+    <div id="daily-mission-modal" class="modal-overlay fixed inset-0 bg-black bg-opacity-60 items-center justify-center p-4 z-50">
+        <div class="modal-content p-8 shadow-2xl w-full max-w-md text-center rounded-2xl" style="background-color: var(--modal-bg-color);">
+            <h3 class="font-brand text-3xl text-cyan-600 text-center mb-4">🎯 Misi Harian 🎯</h3>
+            <p id="daily-mission-text" class="text-lg my-4"></p>
+            <div id="mission-progress-container" class="w-full bg-gray-200 rounded-full h-6 my-4">
+                <div id="mission-progress-bar" class="bg-cyan-500 h-6 rounded-full text-white flex items-center justify-center text-sm font-bold transition-all duration-500" style="width: 0%;">0%</div>
+            </div>
+            <button id="claim-mission-reward-btn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-lg w-full disabled:bg-gray-400 disabled:cursor-not-allowed">Klaim Hadiah</button>
+            <button class="close-modal-btn mt-4 bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-6 rounded-full shadow-lg w-full">Tutup</button>
+        </div>
+    </div>
+
+    <!-- ===== Container for Animations ===== -->
+    <div id="animation-container" class="pointer-events-none"></div>
 
     <script>
-    class Game {
-        constructor() {
-            this.state = {};
-            this.dom = {};
-            this.creatorData = this.getCreatorData();
-            this.planetData = this.getPlanetData();
-            this.currentMiniGame = null;
-            this.activeCreatorTab = 'suitColor';
+        // --- DATA APLIKASI ---
 
-            this.bindDOM();
-            this.resetState();
-        }
-
-        bindDOM() {
-            this.dom = {
-                app: document.getElementById('app-container'),
-                screens: {
-                    start: document.getElementById('start-screen'),
-                    creator: document.getElementById('creator-screen'),
-                    game: document.getElementById('game-screen'),
-                },
-                modalOverlay: document.getElementById('modal-overlay'),
-                modals: {
-                    planetInfo: document.getElementById('planet-info-modal'),
-                    miniGame: document.getElementById('mini-game-modal'),
-                    gallery: document.getElementById('gallery-modal'),
-                },
-                buttons: {
-                    startNewGame: document.getElementById('start-new-game-btn'),
-                    toggleSound: document.getElementById('toggle-sound-btn'),
-                    finishCreation: document.getElementById('finish-creation-btn'),
-                    gallery: document.getElementById('gallery-btn'),
-                },
-                audio: {
-                    bgMusic: document.getElementById('bg-music'),
-                    click: document.getElementById('click-sound'),
-                    success: document.getElementById('success-sound'),
-                    fail: document.getElementById('fail-sound'),
-                },
-                creator: {
-                    preview: document.getElementById('astronaut-preview-container'),
-                    optionsPanel: document.getElementById('options-panel-content'),
-                    tabs: document.querySelectorAll('.creator-tab'),
-                },
-                gameplay: {
-                    solarSystem: document.getElementById('solar-system-container'),
-                    crystalCount: document.getElementById('crystal-count'),
-                    avatarInGame: document.getElementById('avatar-in-game'),
+        const avatarData = {
+            'avatar1': { name: "Hijau Ceria", svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__beam" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__beam)"><rect width="36" height="36" fill="#75d475"></rect><rect x="0" y="0" width="36" height="36" transform="translate(4 4) rotate(268 18 18) scale(1.2)" fill="#248038" rx="36"></rect><g transform="translate(-4 -1) rotate(8 18 18)"><path d="M15 21c2 1 4 1 6 0" stroke="#000000" fill="none" stroke-linecap="round"></path><rect x="10" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#000000"></rect><rect x="24" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#000000"></rect></g></g></svg>`, price: 0, isStarter: true },
+            'avatar2': { name: "Biru Kalem", svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__beam" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__beam)"><rect width="36" height="36" fill="#84b6e0"></rect><rect x="0" y="0" width="36" height="36" transform="translate(0 0) rotate(329 18 18) scale(1.2)" fill="#25648a" rx="36"></rect><g transform="translate(0 5) rotate(-9 18 18)"><path d="M15 21c2 1 4 1 6 0" stroke="#FFFFFF" fill="none" stroke-linecap="round"></path><rect x="14" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#FFFFFF"></rect><rect x="20" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#FFFFFF"></rect></g></g></svg>`, price: 0, isStarter: true },
+            'avatar3': { name: "Krem Hangat", svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__beam" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#f0c38e"></rect></mask><g mask="url(#mask__beam)"><rect width="36" height="36" fill="#f0c38e"></rect><rect x="0" y="0" width="36" height="36" transform="translate(8 -6) rotate(114 18 18) scale(1.2)" fill="#a07d58" rx="36"></rect><g transform="translate(4 -4) rotate(-4 18 18)"><path d="M13,21 a8,8 0 0,0 10,0" fill="#000000"></path><rect x="14" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#000000"></rect><rect x="20" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#000000"></rect></g></g></svg>`, price: 0, isStarter: true },
+            'avatar4': { name: "Merah Jambu", svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__beam" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__beam)"><rect width="36" height="36" fill="#e0a3a3"></rect><rect x="0" y="0" width="36" height="36" transform="translate(-4 -4) rotate(278 18 18) scale(1.1)" fill="#9c5656" rx="64"></rect><g transform="translate(-4 0) rotate(8 18 18)"><path d="M15 19c2 1 4 1 6 0" stroke="#FFFFFF" fill="none" stroke-linecap="round"></path><rect x="11" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#FFFFFF"></rect><rect x="23" y="14" width="1.5" height="2" rx="1" stroke="none" fill="#FFFFFF"></rect></g></g></svg>`, price: 0, isStarter: true },
+        };
+        
+        const shopData = {
+            tokoAvatar: {
+                title: "Toko Avatar",
+                icon: "👕",
+                items: {
+                    'avatar5': { name: "Kucing Lucu", price: 250, svg: `<svg width="80" height="80" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg"><mask id="mask0_33_33" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><circle cx="18" cy="18" r="18" fill="#D9D9D9"/></mask><g mask="url(#mask0_33_33)"><rect width="36" height="36" fill="#F2D4A7"/><ellipse cx="18" cy="33.5" rx="18" ry="13.5" fill="#3B2219"/><path d="M-5 13C-5 5.8203 0.8203 -1.13379e-06 8 -1.13379e-06V13H-5Z" fill="#6A463A"/><path d="M41 13C41 5.8203 35.1797 -1.13379e-06 28 -1.13379e-06V13H41Z" fill="#6A463A"/><rect x="11" y="16" width="3" height="4" rx="1.5" fill="white"/><rect x="22" y="16" width="3" height="4" rx="1.5" fill="white"/><path d="M13 23C13 23 15 25 18 25C21 25 23 23 23 23" stroke="white" stroke-width="2" stroke-linecap="round"/></g></svg>` },
+                    'avatar6': { name: "Anjing Ceria", price: 250, svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__bauhaus" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__bauhaus)"><rect width="36" height="36" fill="#f0c38e"></rect><rect x="0" y="0" width="36" height="36" transform="translate(5 5) rotate(198 18 18) scale(1)" fill="#a07d58" rx="6"></rect><circle cx="18" cy="14" r="4" fill="#000000"></circle><line x1="12" y1="22" x2="24" y2="22" stroke="#000000" stroke-width="2"></line></g></svg>` },
+                    'avatar7': { name: "Panda Santai", price: 300, svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__pixel" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__pixel)"><rect width="36" height="36" fill="#FFFFFF"></rect><rect x="14" y="14" width="4" height="4" fill="#000000"></rect><rect x="22" y="14" width="4" height="4" fill="#000000"></rect><rect x="14" y="22" width="8" height="4" fill="#000000" rx="2"></rect></g></svg>` },
+                    'avatar8': { name: "Robot Masa Depan", price: 500, svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__ring" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__ring)"><rect width="36" height="36" fill="#d6e6f2"></rect><circle cx="18" cy="18" r="14" fill="#769fcd"></circle><circle cx="18" cy="18" r="6" fill="#f7fbfc"></circle></g></svg>` },
+                    'avatar9': { name: "Rubah Cerdik", price: 350, svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__sunset" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__sunset)"><path d="M0 0h36v36H0z" fill="#ff785a"></path><path d="M0 0h36v36H0z" transform="translate(3 -3) rotate(309 18 18) scale(1.2)" fill="#ffb428"></path><path d="M0 0h36v36H0z" transform="translate(6 6) rotate(0 18 18)" fill="#000000"></path><g transform="translate(1 1)"><path d="M15 21c2 1 4 1 6 0" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"></path><circle cx="14" cy="15" r="2" fill="#FFFFFF"></circle><circle cx="22" cy="15" r="2" fill="#FFFFFF"></circle></g></g></svg>` },
+                    'avatar10': { name: "Hantu Imut", price: 200, svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__ghost" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__ghost)"><rect width="36" height="36" fill="#e2e8f0"></rect><path d="M12 22a6 6 0 0112 0Z" fill="#4a5568"></path><circle cx="14" cy="16" r="2" fill="#4a5568"></circle><circle cx="22" cy="16" r="2" fill="#4a5568"></circle></g></svg>` },
+                    'avatar11': { name: "Peri Bunga", price: 400, svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__flower" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__flower)"><rect width="36" height="36" fill="#fecaca"></rect><circle cx="18" cy="18" r="8" fill="#f87171"></circle><path d="M18 2a4 4 0 014 4v4h-8V6a4 4 0 014-4z" fill="#fca5a5"></path><path d="M18 34a4 4 0 01-4-4v-4h8v4a4 4 0 01-4 4z" fill="#fca5a5"></path><path d="M2 18a4 4 0 014-4h4v8H6a4 4 0 01-4-4z" fill="#fca5a5"></path><path d="M34 18a4 4 0 01-4 4h-4v-8h4a4 4 0 014 4z" fill="#fca5a5"></path></g></svg>` },
+                    'avatar12': { name: "Alien Hijau", price: 450, svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__alien" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__alien)"><rect width="36" height="36" fill="#a7f3d0"></rect><path d="M18 10a8 8 0 00-8 8v8h16v-8a8 8 0 00-8-8z" fill="#34d399"></path><ellipse cx="13" cy="18" rx="3" ry="4" fill="#10b981"></ellipse><ellipse cx="23" cy="18" rx="3" ry="4" fill="#10b981"></ellipse></g></svg>` },
+                    'avatar13': { name: "Naga Perkasa", price: 600, svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__dragon" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__dragon)"><rect width="36" height="36" fill="#991b1b"></rect><path d="M12 12c0-4 4-4 4-4s4 0 4 4-4 4-4 4-4 0-4-4z" fill="#fca5a5"></path><path d="M22 18l-4 4-4-4h8z" fill="#fca5a5"></path><path d="M10 24a8 8 0 0016 0" stroke="#fca5a5" stroke-width="2"></path></g></svg>` },
+                    'avatar14': { name: "Penyihir Bijak", price: 550, svg: `<svg viewBox="0 0 36 36" fill="none" role="img" xmlns="http://www.w3.org/2000/svg" width="80" height="80"><mask id="mask__wizard" maskUnits="userSpaceOnUse" x="0" y="0" width="36" height="36"><rect width="36" height="36" fill="#FFFFFF" rx="72"></rect></mask><g mask="url(#mask__wizard)"><rect width="36" height="36" fill="#5b21b6"></rect><path d="M18 4l-8 16h16L18 4z" fill="#a78bfa"></path><circle cx="18" cy="26" r="6" fill="#c4b5fd"></circle><circle cx="18" cy="26" r="2" fill="#5b21b6"></circle></g></svg>` }
                 }
-            };
-        }
-
-        init() {
-            this.loadGame();
-            this.setupEventListeners();
-            this.updateSoundUI();
-            this.showScreen('start');
-        }
-
-        resetState() {
-            this.state = {
-                soundEnabled: true,
-                astronaut: {
-                    suitColor: '#3b82f6',
-                    hairStyle: 1,
-                    face: 1,
-                },
-                crystals: 0,
-                completedPlanets: [],
-            };
-        }
-
-        saveGame() {
-            localStorage.setItem('misiBintangCeriaSave', JSON.stringify(this.state));
-        }
-
-        loadGame() {
-            const savedData = localStorage.getItem('misiBintangCeriaSave');
-            if (savedData) {
-                this.state = JSON.parse(savedData);
-            }
-        }
-
-        setupEventListeners() {
-            this.dom.buttons.toggleSound.addEventListener('click', () => this.toggleSound());
-
-            this.dom.buttons.startNewGame.addEventListener('click', () => {
-                this.playSound('click');
-                // AUDIO FIX: Start music only after user interaction
-                if (this.state.soundEnabled && this.dom.audio.bgMusic.paused) {
-                    this.dom.audio.bgMusic.play().catch(e => console.error("Audio play failed:", e));
+            },
+            tokoKustomisasi: {
+                title: "Warna Kustomisasi",
+                icon: "🎨",
+                items: {
+                    'theme_light': { name: "Tema Terang", price: 0, icon: "☀️", type: "theme", isStarter: true },
+                    'theme_dark': { name: "Tema Gelap", price: 300, icon: "🌙", type: "theme" },
+                    'theme_forest': { name: "Tema Hutan", price: 400, icon: "🌲", type: "theme"},
+                    'theme_ocean': { name: "Tema Lautan", price: 400, icon: "🌊", type: "theme"},
+                    'theme_sunset': { name: "Tema Senja", price: 450, icon: "🌅", type: "theme"},
+                    'theme_space': { name: "Tema Luar Angkasa", price: 500, icon: "🚀", type: "theme"},
+                    'theme_retro': { name: "Tema Retro", price: 350, icon: "🕹️", type: "theme"},
+                    'theme_candy': { name: "Tema Permen", price: 400, icon: "🍬", type: "theme"},
+                    'theme_minimalist': { name: "Tema Minimalis", price: 300, icon: "⚪", type: "theme"},
+                    'theme_gold': { name: "Tema Emas", price: 1000, icon: "✨", type: "theme"}
                 }
-                this.resetState();
-                this.setupCreator();
-                this.showScreen('creator');
-            });
+            },
+            butikCendekia: {
+                title: "Butik Cendekia",
+                icon: "🦉",
+                items: {
+                   'item_tophat': { name: "Topi Pesulap", price: 200, icon: "🎩"},
+                   'item_wizardhat': { name: "Topi Penyihir", price: 350, icon: "🧙"},
+                   'item_monocle': { name: "Monocle", price: 300, icon: "🧐"},
+                   'item_sunglasses': { name: "Kacamata Hitam", price: 250, icon: "😎"},
+                   'item_scarf': { name: "Syal Merah", price: 150, icon: "🧣"},
+                   'item_crown': { name: "Mahkota Raja", price: 1000, icon: "👑"},
+                   'item_3dglasses': { name: "Kacamata 3D", price: 250, icon: "🕶️"},
+                   'item_bowtie': { name: "Dasi Kupu-Kupu", price: 180, icon: "🎀"},
+                   'item_partyhat': { name: "Topi Pesta", price: 100, icon: "🎉"},
+                   'item_headphones': { name: "Headphone", price: 400, icon: "🎧"}
+                }
+            },
+            tokoBonus: {
+                title: "Toko Bonus",
+                icon: "⭐",
+                items: {
+                    'bonus_double': { name: "Poin Ganda (1 Jam)", price: 500, icon: "2x" },
+                    'bonus_hint': { name: "5 Bantuan Ekstra", price: 200, icon: "💡" },
+                    'bonus_streak_protection': { name: "Pelindung Beruntun", price: 750, icon: "🛡️" },
+                    'bonus_skip': { name: "Lewati 3 Kuis", price: 300, icon: "⏭️" },
+                    'bonus_time': { name: "Waktu Ekstra", price: 250, icon: "⏱️" },
+                    'bonus_xp_boost': { name: "XP Boost", price: 400, icon: "🚀" },
+                    'bonus_lootbox': { name: "Kotak Misteri", price: 600, icon: "❓" },
+                    'bonus_revive': { name: "Hidup Kembali", price: 1000, icon: "❤️" },
+                    'bonus_shield': { name: "Perisai Jawaban Salah", price: 800, icon: "🛡️" },
+                    'bonus_keys': { name: "3 Kunci Emas", price: 900, icon: "🔑" }
+                }
+            },
+        };
 
-            this.dom.buttons.finishCreation.addEventListener('click', () => {
-                this.playSound('success');
-                this.saveGame();
-                this.startGame();
-            });
+        // --- DATABASE LENGKAP MATERI ---
+       const edukasiData = {
+            sd: {
+                dunia: {
+                    matematika_dasar: { 
+                        namaDunia: "Kerajaan Angka", warna: "blue", icon: "🔢", deskripsi: "Jelajahi dunia angka, penjumlahan, dan perkalian yang seru!", 
+                        subMateri: { 
+                            penjumlahan: { judul: "Berhitung Cepat", konten: "<p>Penjumlahan adalah cara menggabungkan dua angka atau lebih. Contoh: 2 apel ditambah 3 apel menjadi 5 apel.</p>", funFact: "Simbol tambah (+) sudah digunakan selama lebih dari 500 tahun!", kuis: [{ type: "pilihan-ganda", pertanyaan: "7 + 8 = ?", pilihan: ["14", "15", "16", "13"], jawaban: "15"}] },
+                            pengurangan: { judul: "Ambil dan Sisakan", konten: "<p>Pengurangan adalah mengambil sejumlah angka dari angka lain. Contoh: Punya 5 kue, dimakan 2, sisa 3 kue.</p>", funFact: "Kata 'selisih' adalah nama lain untuk hasil dari pengurangan.", kuis: [{ type: "pilihan-ganda", pertanyaan: "12 - 5 = ?", pilihan: ["6", "7", "8", "9"], jawaban: "7"}] },
+                            perkalian: { judul: "Lompatan Ajaib", konten: "<p>Perkalian adalah penjumlahan berulang. 3 x 4 sama dengan menjumlahkan 4 sebanyak 3 kali.</p>", funFact: "Tabel perkalian modern pertama kali dibuat oleh matematikawan Skotlandia, John Napier.", kuis: [{ type: "pilihan-ganda", pertanyaan: "6 x 3 = ?", pilihan: ["18", "15", "24", "12"], jawaban: "18"}] },
+                            pembagian: { judul: "Bagi Rata", konten: "<p>Pembagian adalah membagi sama rata. 10 permen dibagi untuk 2 anak, masing-masing dapat 5.</p>", funFact: "Simbol bagi (÷) disebut obelus, yang dalam bahasa Yunani berarti 'tusuk sate'.", kuis: [{ type: "pilihan-ganda", pertanyaan: "15 / 3 = ?", pilihan: ["4", "5", "6", "3"], jawaban: "5"}] },
+                            pecahan: { judul: "Potongan Pizza", konten: "<p>Pecahan adalah bagian dari keseluruhan. 1/2 berarti satu dari dua bagian yang sama besar.</p>", funFact: "Orang Mesir kuno menulis semua pecahan sebagai penjumlahan dari pecahan satuan (pembilang 1).", kuis: [{ type: "pilihan-ganda", pertanyaan: "Setengah dari 8 adalah...", pilihan: ["2", "4", "6", "8"], jawaban: "4"}] },
+                        } 
+                    },
+                    bahasa_indonesia_sd: { 
+                        namaDunia: "Pulau Kata", warna: "green", icon: "✍️", deskripsi: "Belajar membaca, menulis, dan menyusun kalimat dengan benar.", 
+                        subMateri: {
+                            alfabet: { judul: "Pasukan Alfabet", konten: "<p>Alfabet adalah kumpulan huruf dari A sampai Z. Setiap huruf memiliki bunyinya sendiri.</p>", funFact: "Bahasa Indonesia menggunakan 26 huruf alfabet Latin, sama seperti Bahasa Inggris.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Huruf apa yang datang setelah huruf 'G'?", pilihan: ["F", "H", "I", "J"], jawaban: "H"}] },
+                            merangkai_kata: { judul: "Merangkai Kata Ajaib", konten: "<p>Menggabungkan huruf vokal (a, i, u, e, o) dan konsonan akan membentuk kata yang punya arti.</p>", funFact: "Kata terpanjang dalam kamus bahasa Indonesia adalah 'mempertanggungjawabkannya'.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Susun huruf 'k-u-b-u' menjadi nama benda.", pilihan: ["kuub", "buku", "kibu", "ubuk"], jawaban: "buku"}] },
+                            tanda_baca: { judul: "Tuan Tanda Baca", konten: "<p>Tanda baca membantu kita mengerti tulisan. Titik (.) untuk berhenti, koma (,) untuk jeda, dan tanda tanya (?) untuk bertanya.</p>", funFact: "Tanda seru (!) dulunya ditulis sebagai kata Latin 'io' yang berarti 'seruan kegembiraan'.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Tanda baca di akhir kalimat 'Siapa namamu' adalah...", pilihan: [".", ",", "?", "!"], jawaban: "?"}] },
+                            kalimat: { judul: "Siapa, Apa, di Mana?", konten: "<p>Kalimat yang baik biasanya menjawab pertanyaan siapa (Subjek), melakukan apa (Predikat), dan apa/siapa yang dikenai (Objek).</p>", funFact: "Tanda titik (.) digunakan untuk mengakhiri sebuah kalimat berita.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Manakah kalimat yang benar?", pilihan: ["Makan nasi saya", "Saya makan nasi", "Nasi saya makan", "Saya nasi makan"], jawaban: "Saya makan nasi"}] },
+                            antonim_sinonim: { judul: "Lawan dan Kawan Kata", konten: "<p>Antonim adalah lawan kata (panas-dingin), sinonim adalah persamaan kata (pintar-pandai).</p>", funFact: "Menggunakan sinonim membuat tulisan menjadi lebih menarik dan tidak membosankan.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Lawan kata dari 'terang' adalah...", pilihan: ["Cerah", "Gelap", "Siang", "Putih"], jawaban: "Gelap"}] },
+                        }
+                    },
+                    ipa_sd: { 
+                        namaDunia: "Taman Sains", warna: "yellow", icon: "🌿", deskripsi: "Pelajari tentang hewan, tumbuhan, dan alam sekitar kita.",
+                        subMateri: {
+                            hewan_tumbuhan: { judul: "Makhluk Hidup", konten: "<p>Ada banyak jenis hewan dan tumbuhan. Hewan makan tumbuhan atau hewan lain, sedangkan tumbuhan membuat makanannya sendiri (fotosintesis).</p>", funFact: "Gajah adalah satu-satunya mamalia yang tidak bisa melompat!", kuis: [{ type: "pilihan-ganda", pertanyaan: "Sapi adalah contoh hewan pemakan...", pilihan: ["Daging", "Tumbuhan", "Segalanya", "Ikan"], jawaban: "Tumbuhan"}] },
+                            pancaindra: { judul: "Lima Indra Ajaib", konten: "<p>Manusia punya lima indra: mata untuk melihat, telinga untuk mendengar, hidung untuk mencium, lidah untuk mengecap, dan kulit untuk meraba.</p>", funFact: "Hidung manusia bisa membedakan lebih dari 1 triliun bau yang berbeda.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Indra yang digunakan untuk merasakan manisnya gula adalah...", pilihan: ["Mata", "Kulit", "Lidah", "Telinga"], jawaban: "Lidah"}] },
+                            siklus_air: { judul: "Petualangan Air", konten: "<p>Air di bumi selalu berputar. Air laut menguap menjadi awan, lalu turun lagi sebagai hujan. Ini disebut siklus air.</p>", funFact: "Jumlah air di Bumi saat ini sama dengan jumlah air pada zaman dinosaurus.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Uap air yang naik ke langit akan membentuk...", pilihan: ["Pelangi", "Awan", "Angin", "Petir"], jawaban: "Awan"}] },
+                            wujud_benda: { judul: "Padat, Cair, Gas!", konten: "<p>Benda memiliki tiga wujud: padat (batu), cair (air), dan gas (udara). Wujud benda bisa berubah, misalnya es mencair menjadi air.</p>", funFact: "Ada wujud benda keempat yang disebut plasma, seperti yang ada pada bintang dan petir.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Perubahan dari cair menjadi padat disebut...", pilihan: ["Mencair", "Menguap", "Membeku", "Menyublim"], jawaban: "Membeku"}] },
+                            tata_surya_sd: { judul: "Siang dan Malam", konten: "<p>Bumi berputar pada porosnya (rotasi) yang menyebabkan siang dan malam. Bumi juga mengelilingi Matahari (revolusi).</p>", funFact: "Jejak kaki para astronot di Bulan akan tetap ada di sana selama jutaan tahun karena tidak ada angin.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Peristiwa terjadinya siang dan malam disebabkan oleh...", pilihan: ["Rotasi Bumi", "Revolusi Bumi", "Gravitasi Bulan", "Rotasi Bulan"], jawaban: "Rotasi Bumi"}] },
+                        }
+                    },
+                    ips_sd: {
+                        namaDunia: "Nusantara Kita", warna: "orange", icon: "🗺️", deskripsi: "Kenali keragaman suku, budaya, dan geografi Indonesia.",
+                        subMateri: {
+                            peta: { judul: "Membaca Peta", konten: "<p>Peta adalah gambar permukaan bumi. Ada simbol-simbol di peta untuk gunung, sungai, dan kota.</p>", funFact: "Peta tertua yang diketahui berasal dari Babilonia sekitar 2.500 tahun yang lalu.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Warna biru pada peta biasanya melambangkan...", pilihan: ["Gunung", "Hutan", "Perairan", "Gurun"], jawaban: "Perairan"}] },
+                            suku_bangsa: { judul: "Rumah Adat dan Suku", konten: "<p>Indonesia kaya akan suku bangsa. Setiap suku punya rumah adat, pakaian adat, dan bahasa yang unik.</p>", funFact: "Ada lebih dari 700 bahasa daerah yang digunakan di seluruh Indonesia.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Rumah Gadang adalah rumah adat dari suku...", pilihan: ["Jawa", "Minangkabau", "Dayak", "Asmat"], jawaban: "Minangkabau"}] },
+                            kegiatan_ekonomi: { judul: "Pekerjaan di Sekitarku", konten: "<p>Orang bekerja sesuai dengan kondisi alamnya. Di pantai banyak nelayan, di pegunungan banyak petani sayur.</p>", funFact: "Pasar terapung di Kalimantan adalah contoh kegiatan ekonomi yang unik dan menyesuaikan dengan alam sungai.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Pekerjaan utama penduduk di daerah pantai adalah...", pilihan: ["Petani", "Nelayan", "Pekerja kantor", "Guru"], jawaban: "Nelayan"}] },
+                            kerajaan_hindu_buddha: { judul: "Raja-Raja Zaman Dulu", konten: "<p>Dulu di Indonesia ada kerajaan besar seperti Sriwijaya yang jaya di laut dan Majapahit yang menyatukan nusantara.</p>", funFact: "Candi Borobudur adalah candi Buddha terbesar di dunia dan merupakan peninggalan kerajaan Mataram Kuno.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Kerajaan maritim (laut) terbesar di Indonesia adalah...", pilihan: ["Majapahit", "Sriwijaya", "Kutai", "Tarumanegara"], jawaban: "Sriwijaya"}] },
+                            pahlawan_nasional: { judul: "Para Pemberani", konten: "<p>Pahlawan nasional adalah orang-orang yang berjuang untuk kemerdekaan Indonesia, seperti Pangeran Diponegoro dan Cut Nyak Dien.</p>", funFact: "Nama pahlawan sering diabadikan sebagai nama jalan, bandara, dan universitas untuk menghormati jasa mereka.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Siapakah pahlawan wanita yang berasal dari Aceh?", pilihan: ["R.A. Kartini", "Cut Nyak Dien", "Dewi Sartika", "Martha Christina Tiahahu"], jawaban: "Cut Nyak Dien"}] },
+                        }
+                    },
+                     seni_budaya_sd: { 
+                        namaDunia: "Galeri Kreasi", warna: "pink", icon: "🎨", deskripsi: "Ekspresikan dirimu melalui gambar, lagu, dan tarian!", 
+                        subMateri: {
+                            gambar_bentuk: { judul: "Menggambar Bentuk", konten: "<p>Menggambar bentuk adalah cara meniru objek tiga dimensi seperti kubus, bola, atau vas bunga ke dalam gambar dua dimensi.</p>", funFact: "Teknik 'arsir' digunakan untuk memberikan kesan gelap-terang pada gambar bentuk sehingga terlihat nyata.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Warna primer yang tidak bisa dibuat dari campuran warna lain adalah...", pilihan: ["Hijau, Oranye, Ungu", "Merah, Kuning, Biru", "Hitam, Putih, Abu-abu"], jawaban: "Merah, Kuning, Biru"}] },
+                            campur_warna: { judul: "Campuran Warna Ajaib", konten: "<p>Warna primer (merah, kuning, biru) dapat dicampur untuk menghasilkan warna sekunder. Merah + Kuning = Oranye.</p>", funFact: "Mata manusia dapat membedakan sekitar 10 juta warna yang berbeda!", kuis: [{ type: "pilihan-ganda", pertanyaan: "Apa hasil dari campuran warna biru dan kuning?", pilihan: ["Ungu", "Cokelat", "Hijau", "Abu-abu"], jawaban: "Hijau"}] },
+                            lagu_daerah: { judul: "Lagu Daerah Nusantara", konten: "<p>Setiap daerah di Indonesia memiliki lagu daerahnya sendiri, seperti 'Ampar-Ampar Pisang' dari Kalimantan Selatan.</p>", funFact: "Lagu 'Rasa Sayange' dari Maluku pernah digunakan dalam iklan pariwisata internasional.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Lagu 'Gundul-Gundul Pacul' berasal dari daerah...", pilihan: ["Jawa Barat", "Jawa Tengah", "Sumatera Barat", "Bali"], jawaban: "Jawa Tengah"}] },
+                            tari_tradisional: { judul: "Tari Tradisional", konten: "<p>Tari tradisional adalah tarian yang tumbuh di kalangan rakyat. Contohnya Tari Saman dari Aceh yang sangat kompak.</p>", funFact: "Tari Kecak dari Bali tidak menggunakan iringan alat musik, melainkan paduan suara 'cak-cak' dari para penarinya.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Gerakan penari yang mengikuti irama musik disebut...", pilihan: ["Wiraga", "Wirama", "Wirasa", "Wirupa"], jawaban: "Wiraga"}] },
+                            mengenal_batik: { judul: "Mengenal Batik", konten: "<p>Batik adalah kain bergambar yang pembuatannya secara khusus dengan menuliskan atau menerakan malam (lilin) pada kain itu.</p>", funFact: "UNESCO telah menetapkan batik sebagai Warisan Kemanusiaan untuk Budaya Lisan dan Nonbendawi dari Indonesia.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Alat utama untuk membuat batik tulis adalah...", pilihan: ["Kuas", "Pensil", "Canting", "Spidol"], jawaban: "Canting"}] },
+                        } 
+                    },
+                    pjok_sd: { 
+                        namaDunia: "Arena Olahraga", warna: "red", icon: "⚽", deskripsi: "Belajar tentang olahraga dan cara menjaga tubuh tetap bugar.", 
+                        subMateri: {
+                            gerak_lokomotor: { judul: "Gerak Lokomotor", konten: "<p>Gerak lokomotor adalah gerakan yang membuat tubuh berpindah tempat, seperti berjalan, berlari, melompat, dan berguling.</p>", funFact: "Berlari adalah salah satu bentuk gerak lokomotor tercepat pada manusia.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Manakah yang BUKAN gerak lokomotor?", pilihan: ["Berjalan", "Berlari", "Melompat", "Memutar lengan"], jawaban: "Memutar lengan"}] },
+                            senam_lantai: { judul: "Senam Lantai Dasar", konten: "<p>Senam lantai adalah gerakan senam yang dilakukan di atas matras. Contohnya adalah rol depan (guling depan) dan rol belakang.</p>", funFact: "Keseimbangan adalah kunci utama dalam melakukan gerakan senam lantai dengan baik.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Gerakan berguling ke depan di atas matras disebut...", pilihan: ["Kayang", "Sikap lilin", "Rol depan", "Meroda"], jawaban: "Rol depan"}] },
+                            permainan_kasti: { judul: "Permainan Bola Kasti", konten: "<p>Kasti adalah permainan bola kecil beregu. Ada regu pemukul dan regu penjaga. Dibutuhkan kekompakan untuk menang.</p>", funFact: "Permainan kasti melatih kecepatan lari, ketepatan melempar, dan kelihaian memukul bola.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Tugas regu penjaga dalam permainan kasti adalah...", pilihan: ["Memukul bola", "Menangkap bola dan melempar ke lawan", "Berlari ke tiang hinggap"], jawaban: "Menangkap bola dan melempar ke lawan"}] },
+                            renang_dasar: { judul: "Dasar-Dasar Renang", konten: "<p>Sebelum berenang, penting untuk melakukan pemanasan dan pengenalan air agar tubuh tidak kaget dan terhindar dari kram.</p>", funFact: "Manusia sebenarnya bisa mengapung di air secara alami karena sebagian besar tubuh kita terdiri dari air.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Gerakan kaki pada renang gaya bebas adalah...", pilihan: ["Seperti katak", "Naik turun bergantian", "Seperti lumba-lumba"], jawaban: "Naik turun bergantian"}] },
+                            kebugaran_jasmani: { judul: "Latihan Kebugaran", konten: "<p>Kebugaran jasmani penting agar tubuh tidak mudah lelah. Latihannya bisa berupa push-up untuk kekuatan lengan dan sit-up untuk kekuatan perut.</p>", funFact: "Melompat-lompat di tempat selama satu menit dapat meningkatkan detak jantung dan baik untuk kesehatan.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Latihan untuk melatih kekuatan otot perut adalah...", pilihan: ["Push-up", "Sit-up", "Lari", "Squat"], jawaban: "Sit-up"}] },
+                        } 
+                    },
+                    pkn_sd: { 
+                        namaDunia: "Istana Kewarganegaraan", warna: "purple", icon: "🏛️", deskripsi: "Pahami hak dan kewajiban sebagai warga negara cilik.", 
+                        subMateri: {
+                            aturan_rumah_sekolah: { judul: "Aturan di Rumah & Sekolah", konten: "<p>Aturan dibuat agar semua hal berjalan dengan tertib. Contoh aturan di rumah adalah merapikan mainan setelah bermain. Aturan di sekolah adalah datang tepat waktu.</p>", funFact: "Menaati aturan melatih kita menjadi pribadi yang disiplin dan bertanggung jawab.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Contoh menaati aturan di sekolah adalah...", pilihan: ["Mencoret-coret meja", "Mengerjakan piket kelas", "Datang terlambat"], jawaban: "Mengerjakan piket kelas"}] },
+                            sila_pancasila: { judul: "Sila-Sila Pancasila", konten: "<p>Pancasila memiliki lima sila. Sila pertama 'Ketuhanan Yang Maha Esa' mengajarkan kita untuk percaya kepada Tuhan dan menghormati agama lain.</p>", funFact: "Urutan sila-sila dalam Pancasila tidak boleh diubah-ubah karena merupakan satu kesatuan.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Sikap yang sesuai dengan sila pertama Pancasila adalah...", pilihan: ["Rajin menabung", "Berdoa sebelum makan", "Gotong royong"], jawaban: "Berdoa sebelum makan"}] },
+                            bhinneka_tunggal_ika: { judul: "Arti Bhinneka Tunggal Ika", konten: "<p>Bhinneka Tunggal Ika artinya 'berbeda-beda tetapi tetap satu jua'. Ini adalah semboyan bangsa Indonesia yang menggambarkan persatuan dalam keragaman.</p>", funFact: "Semboyan ini diambil dari kitab Sutasoma karangan Mpu Tantular.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Sikap yang mencerminkan Bhinneka Tunggal Ika adalah...", pilihan: ["Hanya berteman dengan yang satu suku", "Menghargai teman yang berbeda agama", "Mengejek budaya daerah lain"], jawaban: "Menghargai teman yang berbeda agama"}] },
+                            hak_kewajiban_anak: { judul: "Hak dan Kewajiban Anak", konten: "<p>Hak anak adalah sesuatu yang harus ia dapatkan, seperti hak untuk bermain dan belajar. Kewajiban adalah sesuatu yang harus dilakukan, seperti membantu orang tua.</p>", funFact: "Hak dan kewajiban harus dilaksanakan secara seimbang.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Mendapatkan kasih sayang dari orang tua adalah contoh...", pilihan: ["Kewajiban anak", "Hak anak", "Peraturan sekolah"], jawaban: "Hak anak"}] },
+                            musyawarah_kelas: { judul: "Musyawarah di Kelas", konten: "<p>Musyawarah adalah cara mengambil keputusan bersama. Contohnya saat memilih ketua kelas. Semua siswa berhak memberikan pendapat.", funFact: "Dalam musyawarah, kita harus menghargai pendapat orang lain meskipun berbeda dengan pendapat kita.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Jika pendapat kita tidak diterima dalam musyawarah, sikap kita seharusnya...", pilihan: ["Marah dan pulang", "Menerima keputusan dengan lapang dada", "Memaksa teman lain"], jawaban: "Menerima keputusan dengan lapang dada"}] },
+                        } 
+                    },
+                    tik_sd: { 
+                        namaDunia: "Planet Digital", warna: "teal", icon: "💻", deskripsi: "Kenali komputer, internet, dan cara aman berselancar di dunia maya.", 
+                        subMateri: {
+                            perangkat_keras: { judul: "Mengenal Komputer", konten: "<p>Komputer memiliki perangkat keras (hardware) utama: monitor (layar), CPU (otak komputer), keyboard (untuk mengetik), dan mouse (untuk menggerakkan kursor).</p>", funFact: "Mouse komputer pertama terbuat dari kayu!", kuis: [{ type: "pilihan-ganda", pertanyaan: "Perangkat untuk menampilkan gambar dan tulisan dari komputer adalah...", pilihan: ["CPU", "Keyboard", "Mouse", "Monitor"], jawaban: "Monitor"}] },
+                            perangkat_lunak: { judul: "Program Komputer", konten: "<p>Perangkat lunak (software) adalah program yang menjalankan komputer. Contohnya adalah sistem operasi (seperti Windows) dan program untuk menggambar (seperti Paint).</p>", funFact: "Program komputer pertama ditulis pada tahun 1843 oleh seorang wanita bernama Ada Lovelace.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Program yang digunakan untuk menggambar di komputer adalah...", pilihan: ["Paint", "Calculator", "Word", "Excel"], jawaban: "Paint"}] },
+                            mengetik: { judul: "Latihan Mengetik", konten: "<p>Keyboard digunakan untuk mengetik huruf dan angka. Tombol spasi untuk memberi jarak, dan tombol Enter untuk membuat baris baru.", funFact: "Susunan huruf QWERTY pada keyboard dibuat agar kita mengetik lebih lambat, karena mesin tik zaman dulu sering macet jika mengetik terlalu cepat.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Tombol untuk menghapus tulisan yang salah adalah...", pilihan: ["Enter", "Spasi", "Backspace", "Shift"], jawaban: "Backspace"}] },
+                            internet_dasar: { judul: "Apa itu Internet?", konten: "<p>Internet adalah jaringan komputer raksasa yang menghubungkan seluruh dunia. Dengan internet, kita bisa mencari informasi dan berkomunikasi dengan orang lain.</p>", funFact: "Email pertama dikirim pada tahun 1971, bahkan sebelum internet dikenal luas.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Untuk terhubung ke internet, kita memerlukan...", pilihan: ["Printer", "Speaker", "Koneksi internet (misal: WiFi)"], jawaban: "Koneksi internet (misal: WiFi)"}] },
+                            aman_di_internet: { judul: "Aman di Dunia Maya", konten: "<p>Selalu ingat untuk tidak memberikan informasi pribadi seperti alamat rumah atau nomor telepon kepada orang asing di internet. Beritahu orang tuamu jika ada sesuatu yang membuatmu tidak nyaman.", funFact: "Kata sandi yang kuat biasanya terdiri dari campuran huruf besar, huruf kecil, angka, dan simbol.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Jika ada orang tidak dikenal menghubungimu di internet, sebaiknya kamu...", pilihan: ["Memberikan nomormu", "Mengabaikannya dan memberitahu orang tua", "Mengajaknya bertemu"], jawaban: "Mengabaikannya dan memberitahu orang tua"}] },
+                        } 
+                    },
+                    musik_sd: { 
+                        namaDunia: "Melodi Ceria", warna: "fuchsia", icon: "🎵", deskripsi: "Mengenal not, irama, dan alat musik yang menyenangkan.", 
+                        subMateri: {
+                            nada_tinggi_rendah: { judul: "Nada Tinggi dan Rendah", konten: "<p>Dalam musik, ada nada yang terdengar tinggi dan ada yang rendah. Pada not balok, semakin tinggi posisi not, semakin tinggi nadanya.</p>", funFact: "Suara peluit bernada tinggi, sedangkan suara drum bernada rendah.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Tangga nada dasar dalam musik adalah...", pilihan: ["A-B-C-D-E-F-G", "Do-Re-Mi-Fa-So-La-Si-Do", "1-2-3-4-5-6-7-8"], jawaban: "Do-Re-Mi-Fa-So-La-Si-Do"}] },
+                            tempo: { judul: "Tempo Cepat dan Lambat", konten: "<p>Tempo adalah cepat lambatnya sebuah lagu dinyanyikan. Lagu gembira biasanya bertempo cepat, lagu sedih bertempo lambat.</p>", funFact: "Kata 'tempo' berasal dari bahasa Italia yang artinya 'waktu'.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Lagu 'Bintang Kecil' sebaiknya dinyanyikan dengan tempo...", pilihan: ["Sangat cepat (Allegro)", "Lambat (Largo)", "Sedang (Moderato)"], jawaban: "Lambat (Largo)"}] },
+                            dinamik: { judul: "Dinamik Keras dan Lembut", konten: "<p>Dinamik adalah keras lembutnya suara saat bernyanyi atau bermain musik. Tanda 'f' (forte) berarti keras, tanda 'p' (piano) berarti lembut.</p>", funFact: "Nama alat musik 'piano' sebenarnya adalah 'pianoforte', yang berarti bisa memainkan nada lembut dan keras.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Untuk menunjukkan bagian lagu yang dinyanyikan dengan keras, digunakan tanda...", pilihan: ["p (piano)", "mp (mezzo piano)", "f (forte)"], jawaban: "f (forte)"}] },
+                            alat_musik_melodis: { judul: "Alat Musik Melodis", konten: "<p>Alat musik melodis adalah alat musik yang dapat menghasilkan nada, seperti piano, pianika, dan rekorder.</p>", funFact: "Pianika dimainkan dengan cara ditiup sambil menekan tuts-tutsnya.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Berikut ini yang merupakan alat musik melodis adalah...", pilihan: ["Drum", "Gendang", "Pianika", "Triangle"], jawaban: "Pianika"}] },
+                            not_angka: { judul: "Membaca Not Angka", konten: "<p>Not angka menggunakan angka 1 (do) hingga 7 (si) untuk mewakili nada. Tanda titik di atas atau di bawah angka menunjukkan nada yang lebih tinggi atau rendah.</p>", funFact: "Sistem notasi angka ini sangat populer di Indonesia untuk belajar musik.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Dalam notasi angka, angka 5 melambangkan nada...", pilihan: ["Do", "Mi", "Sol", "Si"], jawaban: "Sol"}] },
+                        } 
+                    },
+                    inggris_sd: { 
+                        namaDunia: "Kampung Inggris", warna: "indigo", icon: "🇬🇧", deskripsi: "Pelajari kata-kata dan percakapan dasar dalam Bahasa Inggris.", 
+                        subMateri: {
+                            greetings: { judul: "Greetings (Sapaan)", konten: "<p>Untuk menyapa dalam bahasa Inggris, kita bisa menggunakan 'Hello', 'Hi', 'Good morning' (selamat pagi), 'Good afternoon' (selamat siang), dan 'Good evening' (selamat malam).</p>", funFact: "'Goodbye' adalah kependekan dari frasa 'God be with ye' (Tuhan bersamamu).", kuis: [{ type: "pilihan-ganda", pertanyaan: "Apa yang kamu ucapkan saat bertemu guru di pagi hari?", pilihan: ["Good night", "Good morning", "Goodbye"], jawaban: "Good morning"}] },
+                            numbers: { judul: "Numbers (Angka)", konten: "<p>Mari berhitung dalam bahasa Inggris! 1 (one), 2 (two), 3 (three), 4 (four), 5 (five), 6 (six), 7 (seven), 8 (eight), 9 (nine), 10 (ten).</p>", funFact: "Angka 'four' (4) adalah satu-satunya angka yang jumlah hurufnya sama dengan nilainya.", kuis: [{ type: "pilihan-ganda", pertanyaan: "What comes after six?", pilihan: ["Five", "Eight", "Seven", "Nine"], jawaban: "Seven"}] },
+                            colors: { judul: "Colors (Warna)", konten: "<p>Warna dalam bahasa Inggris: red (merah), yellow (kuning), blue (biru), green (hijau), black (hitam), white (putih).</p>", funFact: "Beberapa penelitian menunjukkan bahwa warna biru adalah warna yang paling disukai di seluruh dunia.", kuis: [{ type: "pilihan-ganda", pertanyaan: "The color of the sky is...", pilihan: ["Red", "Green", "Blue"], jawaban: "Blue"}] },
+                            animals: { judul: "Animals (Hewan)", konten: "<p>Nama-nama hewan: cat (kucing), dog (anjing), bird (burung), fish (ikan), elephant (gajah), lion (singa).</p>", funFact: "Suara kucing 'meow' dalam bahasa Inggris hampir sama bunyinya di banyak bahasa lain.", kuis: [{ type: "pilihan-ganda", pertanyaan: "An animal that can fly is a...", pilihan: ["Fish", "Dog", "Bird"], jawaban: "Bird"}] },
+                            family: { judul: "My Family (Keluargaku)", konten: "<p>Anggota keluarga: father (ayah), mother (ibu), brother (saudara laki-laki), sister (saudara perempuan).</p>", funFact: "Kata 'dad' dan 'mom' adalah panggilan informal yang umum digunakan di banyak negara berbahasa Inggris.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Your mother's mother is your...", pilihan: ["Sister", "Aunt", "Grandmother"], jawaban: "Grandmother"}] },
+                        } 
+                    }
+                }
+            },
+            smp: {
+                dunia: {
+                    matematika_smp: {
+                        namaDunia: "Laboratorium Aljabar", warna: "blue", icon: "➗", deskripsi: "Memecahkan misteri dengan variabel dan rumus matematika.",
+                        subMateri: {
+                            aljabar: { judul: "Misteri Huruf X", konten: "<p>Aljabar menggunakan huruf (variabel) untuk mewakili angka yang tidak diketahui. Contoh: x + 5 = 8, berarti x adalah 3.</p>", funFact: "Kata 'aljabar' berasal dari kata Arab 'al-jabr' yang berarti 'penggabungan bagian yang rusak'.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Jika 2a = 10, berapakah nilai a?", pilihan: ["4", "5", "6"], jawaban: "5" }] },
+                            himpunan: { judul: "Klub Himpunan", konten: "<p>Himpunan adalah kumpulan objek yang terdefinisi dengan jelas. Contoh: Himpunan hewan berkaki empat.</p>", funFact: "Konsep himpunan modern dikembangkan oleh Georg Cantor pada akhir abad ke-19.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Mana yang merupakan himpunan?", pilihan: ["Kumpulan lukisan indah", "Kumpulan siswa kelas 7A", "Kumpulan orang pintar"], jawaban: "Kumpulan siswa kelas 7A" }] },
+                            garis_sudut: { judul: "Perpotongan Garis", konten: "<p>Dua garis sejajar yang dipotong garis lain akan membentuk sudut-sudut yang memiliki hubungan, seperti sehadap dan berseberangan.</p>", funFact: "Ilmu tentang garis dan sudut, geometri, adalah salah satu cabang matematika tertua.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Sudut yang besarnya tepat 90 derajat disebut sudut...", pilihan: ["Lancip", "Tumpul", "Siku-siku"], jawaban: "Siku-siku" }] },
+                            pythagoras: { judul: "Segitiga Siku-Siku Pythagoras", konten: "<p>Pada segitiga siku-siku, kuadrat sisi miring (hipotenusa) sama dengan jumlah kuadrat dua sisi lainnya (a² + b² = c²).</p>", funFact: "Meskipun dinamai Pythagoras, teorema ini sudah dikenal oleh bangsa Babilonia 1000 tahun sebelumnya.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Jika sisi tegak segitiga adalah 3 dan 4, berapa sisi miringnya?", pilihan: ["5", "6", "7"], jawaban: "5" }] },
+                            bangun_ruang: { judul: "Dimensi Ketiga", konten: "<p>Bangun ruang seperti kubus, balok, dan tabung memiliki volume (isi) dan luas permukaan.</p>", funFact: "Bola adalah bangun ruang dengan luas permukaan terkecil untuk volume tertentu.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Rumus volume kubus dengan sisi 's' adalah...", pilihan: ["s x s", "6 x s x s", "s x s x s"], jawaban: "s x s x s" }] },
+                        }
+                    },
+                    ipa_smp: {
+                        namaDunia: "Ekspedisi Biologi & Fisika", warna: "green", icon: "🧬", deskripsi: "Menyelami dunia makhluk hidup dan hukum-hukum alam.",
+                        subMateri: {
+                            sel: { judul: "Kota Sel", konten: "<p>Sel adalah unit terkecil kehidupan. Sel hewan dan tumbuhan memiliki bagian-bagian (organel) seperti inti sel dan mitokondria.</p>", funFact: "Tubuh manusia dewasa terdiri dari sekitar 37 triliun sel!", kuis: [{ type: "pilihan-ganda", pertanyaan: "Bagian sel yang berfungsi sebagai 'otak' atau pusat kendali adalah?", pilihan: ["Dinding Sel", "Mitokondria", "Inti Sel"], jawaban: "Inti Sel" }] },
+                            ekosistem: { judul: "Jaring-Jaring Kehidupan", konten: "<p>Ekosistem adalah interaksi antara makhluk hidup (biotik) dan lingkungannya (abiotik). Ada rantai makanan dan jaring-jaring makanan.</p>", funFact: "Satu sendok teh tanah yang sehat bisa mengandung miliaran mikroorganisme.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Dalam rantai makanan, tumbuhan berperan sebagai...", pilihan: ["Konsumen", "Produsen", "Pengurai"], jawaban: "Produsen" }] },
+                            hukum_newton: { judul: "Gaya dan Gerak Newton", konten: "<p>Hukum Newton menjelaskan hubungan antara gaya dan gerak. Benda diam akan tetap diam jika tidak ada gaya (Inersia).</p>", funFact: "Kisah apel jatuh yang menginspirasi Newton tentang gravitasi mungkin tidak benar-benar terjadi, tetapi menjadi legenda yang populer.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Mengapa kita terdorong ke depan saat bus mengerem mendadak? Ini contoh hukum...", pilihan: ["Hukum I Newton", "Hukum II Newton", "Hukum III Newton"], jawaban: "Hukum I Newton" }] },
+                            energi: { judul: "Energi Kinetik & Potensial", konten: "<p>Energi tidak dapat diciptakan atau dimusnahkan, hanya berubah bentuk. Energi potensial adalah energi karena posisi, energi kinetik adalah energi karena gerak.</p>", funFact: "Roller coaster adalah contoh sempurna perubahan energi dari potensial (di puncak) menjadi kinetik (saat meluncur).", kuis: [{ type: "pilihan-ganda", pertanyaan: "Apel yang tergantung di pohon memiliki energi...", pilihan: ["Kinetik", "Potensial", "Bunyi"], jawaban: "Potensial" }] },
+                            listrik: { judul: "Arus Listrik", konten: "<p>Listrik dinamis adalah aliran elektron dalam suatu rangkaian tertutup. Ada rangkaian seri dan paralel.</p>", funFact: "Belut listrik dapat menghasilkan sengatan hingga 600 volt untuk melumpuhkan mangsanya.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Pada rangkaian seri, jika satu lampu mati, maka lampu lain akan...", pilihan: ["Tetap menyala", "Makin terang", "Ikut mati"], jawaban: "Ikut mati" }] },
+                        }
+                    },
+                    ips_smp: {
+                        namaDunia: "Kronik Sejarah & Geografi", warna: "orange", icon: "📜", deskripsi: "Menelusuri jejak masa lalu dan menjelajahi peta dunia.",
+                        subMateri: {
+                            kedatangan_bangsa_eropa: { judul: "Kedatangan Bangsa Eropa", konten: "<p>Bangsa Eropa datang ke Nusantara pada abad ke-16 untuk mencari rempah-rempah yang sangat berharga, didorong oleh semangat Gold, Glory, dan Gospel.</p>", funFact: "Jatuhnya Konstantinopel ke tangan Turki Usmani pada 1453 membuat jalur perdagangan rempah-rempah terputus, mendorong Eropa mencari jalur laut sendiri.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Tujuan utama penjelajahan samudra oleh bangsa Eropa dikenal dengan sebutan...", pilihan: ["3G (Gold, Glory, Gospel)", "3K (Kebersihan, Keindahan, Keamanan)", "3S (Senyum, Sapa, Salam)"], jawaban: "3G (Gold, Glory, Gospel)"}] },
+                            pergerakan_nasional: { judul: "Kebangkitan Nasional", konten: "<p>Awal abad ke-20 menandai dimulainya Pergerakan Nasional, di mana perjuangan tidak lagi bersifat kedaerahan tetapi bersifat nasional, menggunakan organisasi modern. Diawali berdirinya Budi Utomo tahun 1908.</p>", funFact: "Politik Etis atau 'politik balas budi' yang diterapkan Belanda secara tidak langsung melahirkan kaum terpelajar yang kemudian memotori pergerakan nasional.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Hari lahirnya organisasi Budi Utomo diperingati sebagai...", pilihan: ["Hari Pendidikan Nasional", "Hari Kebangkitan Nasional", "Hari Pahlawan"], jawaban: "Hari Kebangkitan Nasional"}] },
+                            sekitar_proklamasi: { judul: "Sekitar Proklamasi", konten: "<p>Menyerahnya Jepang kepada Sekutu menciptakan kekosongan kekuasaan di Indonesia. Golongan muda mendesak golongan tua untuk segera memproklamasikan kemerdekaan.</p>", funFact: "Peristiwa Rengasdengklok adalah 'penculikan' Soekarno-Hatta oleh golongan muda untuk menjauhkan mereka dari pengaruh Jepang.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Naskah Proklamasi Kemerdekaan Indonesia diketik oleh...", pilihan: ["Soekarno", "Mohammad Hatta", "Sayuti Melik"], jawaban: "Sayuti Melik"}] },
+                            posisi_geografis_indonesia: { judul: "Posisi Geografis Indonesia", konten: "<p>Indonesia terletak di antara dua benua (Asia dan Australia) dan dua samudra (Hindia dan Pasifik). Posisi silang ini sangat strategis.</p>", funFact: "Indonesia adalah negara kepulauan terbesar di dunia, terdiri dari lebih dari 17.000 pulau.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Letak Indonesia di antara dua benua dan dua samudra disebut letak...", pilihan: ["Astronomis", "Geologis", "Geografis"], jawaban: "Geografis"}] },
+                            benua_samudra: { judul: "Benua dan Samudra", konten: "<p>Permukaan bumi terdiri dari daratan luas yang disebut benua dan perairan luas yang disebut samudra.</p>", funFact: "Samudra Pasifik adalah samudra terbesar dan terdalam, mencakup sekitar sepertiga permukaan Bumi.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Benua terluas di dunia adalah...", pilihan: ["Afrika", "Amerika", "Asia"], jawaban: "Asia"}] },
+                        }
+                    },
+                    bahasa_indonesia_smp: {
+                        namaDunia: "Panggung Sastra", warna: "red", icon: "🎭", deskripsi: "Menganalisis puisi, cerpen, dan berbagai jenis teks.",
+                        subMateri: {
+                            unsur_intrinsik_cerpen: { judul: "Unsur Intrinsik Cerpen", konten: "<p>Unsur intrinsik adalah unsur yang membangun cerita dari dalam, meliputi tema, tokoh & penokohan, alur (plot), latar (setting), sudut pandang, dan amanat.</p>", funFact: "Alur maju (progresif) adalah alur yang paling umum digunakan.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Pesan moral yang ingin disampaikan pengarang kepada pembaca disebut...", pilihan: ["Tema", "Alur", "Amanat"], jawaban: "Amanat"}] },
+                            majas: { judul: "Gaya Bahasa (Majas)", konten: "<p>Majas adalah gaya bahasa kiasan untuk membuat karya sastra lebih hidup. Contoh: majas personifikasi (daun menari-nari), metafora (raja siang), dan hiperbola (teriakannya menggelegar).</p>", funFact: "Penggunaan majas yang tepat dapat membangkitkan imajinasi pembaca dan memperkuat makna.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Kalimat 'Pena lebih tajam daripada pedang' menggunakan majas...", pilihan: ["Hiperbola", "Metafora", "Personifikasi"], jawaban: "Metafora"}] },
+                            puisi_rakyat: { judul: "Puisi Rakyat", konten: "<p>Puisi rakyat adalah sastra lisan yang terikat aturan, seperti pantun, gurindam, dan syair. Pantun bersajak a-b-a-b, baris 1-2 sampiran, baris 3-4 isi.</p>", funFact: "Gurindam Dua Belas karya Raja Ali Haji adalah salah satu karya sastra Melayu klasik yang paling terkenal.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Puisi rakyat yang terdiri dari dua baris adalah...", pilihan: ["Pantun", "Syair", "Gurindam"], jawaban: "Gurindam"}] },
+                            buku_fiksi_nonfiksi: { judul: "Fiksi dan Nonfiksi", konten: "<p>Buku fiksi adalah buku yang berisi cerita rekaan atau khayalan (novel, cerpen). Buku nonfiksi adalah buku yang berisi fakta dan data (biografi, buku pelajaran).</p>", funFact: "Batas antara fiksi dan nonfiksi terkadang bisa kabur, seperti dalam novel sejarah.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Buku yang menceritakan riwayat hidup seseorang disebut...", pilihan: ["Autobiografi", "Biografi", "Novel"], jawaban: "Biografi"}] },
+                            berita: { judul: "Teks Berita", konten: "<p>Teks berita harus mengandung unsur 5W+1H (What, Who, Where, When, Why, How), bersifat faktual, dan objektif.</p>", funFact: "Struktur piramida terbalik sering digunakan dalam penulisan berita, di mana informasi paling penting diletakkan di awal.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Unsur berita yang menjawab pertanyaan 'di mana' disebut...", pilihan: ["What", "Where", "When"], jawaban: "Where"}] },
+                        }
+                    },
+                    inggris_smp: { 
+                        namaDunia: "English Harbour", warna: "teal", icon: "⚓", deskripsi: "Menguasai grammar, tenses, dan percakapan Bahasa Inggris.", 
+                        subMateri: {
+                            simple_present: { judul: "Simple Present Tense", konten: "<p>Simple Present Tense digunakan untuk menyatakan kebiasaan, atau fakta umum. Contoh: 'I go to school every day.'</p>", funFact: "Untuk subjek he, she, it, kata kerjanya biasanya ditambahkan akhiran -s atau -es.", kuis: [{ type: "pilihan-ganda", pertanyaan: "She ... English very well.", pilihan: ["speak", "speaks", "speaking"], jawaban: "speaks"}] },
+                            simple_past: { judul: "Simple Past Tense", konten: "<p>Simple Past Tense digunakan untuk menceritakan kejadian di masa lampau. Biasanya menggunakan kata kerja bentuk kedua (Verb 2). Contoh: 'We visited Bali last year.'</p>", funFact: "Banyak kata kerja tak beraturan (irregular verbs) yang bentuk keduanya tidak mengikuti pola -ed, seperti go -> went, eat -> ate.", kuis: [{ type: "pilihan-ganda", pertanyaan: "I ... a movie yesterday.", pilihan: ["watch", "watched", "watching"], jawaban: "watched"}] },
+                            descriptive_text: { judul: "Descriptive Text", konten: "<p>Descriptive text bertujuan untuk menggambarkan seseorang, tempat, atau benda secara detail.</p>", funFact: "Penggunaan kata sifat (adjectives) yang kaya sangat penting dalam descriptive text.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Tujuan utama dari descriptive text adalah...", pilihan: ["Menceritakan urutan kejadian", "Memberi petunjuk", "Menggambarkan sesuatu"], jawaban: "Menggambarkan sesuatu"}] },
+                            recount_text: { judul: "Recount Text", konten: "<p>Recount text menceritakan kembali pengalaman atau kejadian di masa lampau secara berurutan.</p>", funFact: "Recount text selalu menggunakan Past Tense karena menceritakan sesuatu yang sudah berlalu.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Buku harian atau diary adalah contoh dari...", pilihan: ["Procedure text", "Recount text", "Descriptive text"], jawaban: "Recount text"}] },
+                            procedure_text: { judul: "Procedure Text", konten: "<p>Procedure text memberikan instruksi atau langkah-langkah untuk melakukan sesuatu. Contohnya adalah resep masakan.</p>", funFact: "Procedure text sering menggunakan kalimat perintah (imperative sentences) seperti 'Cut the onion'.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Teks yang berisi cara membuat mi instan termasuk jenis...", pilihan: ["Recount text", "Narrative text", "Procedure text"], jawaban: "Procedure text"}] },
+                        }
+                    },
+                    pkn_smp: { namaDunia: "Parlemen Muda", warna: "purple", icon: "⚖️", deskripsi: "Mempelajari dasar-dasar negara, hukum, dan demokrasi.", subMateri: { /* Konten ditambahkan di sini */ } },
+                    kimia_smp: { namaDunia: "Dapur Kimia", warna: "stone", icon: "🧪", deskripsi: "Mengenal unsur, senyawa, dan reaksi yang membentuk dunia kita.", subMateri: { /* Konten ditambahkan di sini */ } },
+                    fisika_lanjutan_smp: { namaDunia: "Bengkel Fisika", warna: "yellow", icon: "⚛️", deskripsi: "Mengungkap hukum alam yang mengatur energi, gaya, dan gerak.", subMateri: { /* Konten ditambahkan di sini */ } },
+                    biologi_lanjutan_smp: { namaDunia: "Ekspedisi Kehidupan", warna: "lime", icon: "🔬", deskripsi: "Menyelami sistem tubuh manusia dan interaksi makhluk hidup.", subMateri: { /* Konten ditambahkan di sini */ } },
+                    ekonomi_smp: { namaDunia: "Bursa Ekonomi", warna: "fuchsia", icon: "📈", deskripsi: "Memahami konsep permintaan, penawaran, dan kegiatan ekonomi.", subMateri: { /* Konten ditambahkan di sini */ } },
+                }
+            },
+            sma: {
+                dunia: {
+                    matematika_sma: {
+                        namaDunia: "Kalkulus Kosmos", warna: "purple", icon: "∬", deskripsi: "Menggunakan matematika tingkat lanjut untuk memahami perubahan.",
+                        subMateri: {
+                            limit: { judul: "Gerbang Menuju Tak Hingga", konten: "<p>Limit adalah nilai yang 'didekati' oleh suatu fungsi saat inputnya mendekati suatu nilai tertentu. Konsep ini menjadi fondasi dari turunan dan integral.</p>", funFact: "Konsep limit sudah ada sejak zaman Yunani kuno, tetapi baru diformalkan pada abad ke-19.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Limit dari f(x) = x + 2 saat x mendekati 3 adalah?", pilihan: ["3", "Tak hingga", "5"], jawaban: "5" }] },
+                            turunan: { judul: "Laju Perubahan Sesaat", konten: "<p>Turunan (diferensial) mengukur laju perubahan sesaat dari suatu fungsi. Dalam fisika, turunan dari posisi adalah kecepatan.</p>", funFact: "Isaac Newton dan Gottfried Leibniz secara independen mengembangkan kalkulus pada abad ke-17.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Turunan pertama dari f(x) = 3x² adalah...", pilihan: ["6x", "3x", "x²"], jawaban: "6x" }] },
+                            integral: { judul: "Menghitung Luas di Bawah Kurva", konten: "<p>Integral adalah kebalikan dari turunan (anti-turunan). Integral tentu digunakan untuk menghitung luas area di bawah kurva.</p>", funFact: "Integral sangat penting dalam bidang teknik untuk menghitung volume benda putar dan pusat massa.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Integral dari f(x) = 2x adalah...", pilihan: ["x² + C", "2 + C", "x + C"], jawaban: "x² + C" }] },
+                            matriks: { judul: "Matriks dan Transformasi", konten: "<p>Matriks adalah susunan bilangan dalam baris dan kolom. Matriks dapat digunakan untuk menyelesaikan sistem persamaan linear dan melakukan transformasi geometri.</p>", funFact: "Matriks digunakan dalam grafika komputer untuk memutar, memperbesar, dan memindahkan objek 3D.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Matriks yang hasil perkaliannya dengan matriks lain tidak mengubah matriks tersebut adalah matriks...", pilihan: ["Nol", "Identitas", "Transpose"], jawaban: "Identitas" }] },
+                            vektor: { judul: "Besaran dan Arah", konten: "<p>Vektor adalah besaran yang memiliki nilai dan arah, seperti kecepatan dan gaya. Berbeda dengan skalar yang hanya memiliki nilai.</p>", funFact: "GPS menggunakan prinsip vektor untuk menghitung posisi dan rute perjalanan Anda.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Manakah dari berikut ini yang merupakan besaran vektor?", pilihan: ["Suhu", "Jarak", "Perpindahan"], jawaban: "Perpindahan" }] },
+                        }
+                    },
+                    fisika_sma: {
+                        namaDunia: "Reaktor Fisika Kuantum", warna: "red", icon: "💥", deskripsi: "Menjelajahi dunia partikel dan hukum fisika modern.",
+                        subMateri: {
+                            relativitas: { judul: "Ruang-Waktu Einstein", konten: "<p>Teori relativitas khusus Einstein menyatakan bahwa ruang dan waktu bersifat relatif, dan kecepatan cahaya adalah konstan bagi semua pengamat.</p>", funFact: "Karena efek relativitas, waktu berjalan sedikit lebih lambat bagi astronot di luar angkasa dibandingkan di Bumi.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Menurut Einstein, apa yang terjadi pada massa benda saat bergerak mendekati kecepatan cahaya?", pilihan: ["Berkurang", "Tetap", "Bertambah"], jawaban: "Bertambah" }] },
+                            efek_fotolistrik: { judul: "Cahaya sebagai Partikel", konten: "<p>Efek fotolistrik adalah keluarnya elektron dari logam saat disinari cahaya. Ini membuktikan bahwa cahaya memiliki sifat partikel (foton).</p>", funFact: "Albert Einstein memenangkan Hadiah Nobel bukan untuk teori relativitas, melainkan untuk penjelasannya tentang efek fotolistrik.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Energi satu foton (partikel cahaya) sebanding dengan...", pilihan: ["Amplitudo", "Frekuensi", "Panjang gelombang"], jawaban: "Frekuensi" }] },
+                            fisika_inti: { judul: "Energi dari Inti Atom", konten: "<p>Fisika inti mempelajari tentang inti atom. Reaksi fisi (pembelahan inti) dan fusi (penggabungan inti) melepaskan energi yang sangat besar.</p>", funFact: "Reaksi fusi adalah sumber energi Matahari dan bintang-bintang.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Reaksi yang terjadi pada Pembangkit Listrik Tenaga Nuklir (PLTN) adalah...", pilihan: ["Fisi", "Fusi", "Peluruhan beta"], jawaban: "Fisi" }] },
+                            termodinamika: { judul: "Hukum Panas dan Energi", konten: "<p>Termodinamika mempelajari hubungan antara panas, kerja, dan energi. Hukum kedua menyatakan bahwa entropi (ketidakteraturan) semesta selalu bertambah.</p>", funFact: "Tidak mungkin membuat mesin yang 100% efisien mengubah panas menjadi kerja.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Hukum pertama termodinamika pada dasarnya adalah pernyataan dari hukum kekekalan...", pilihan: ["Momentum", "Massa", "Energi"], jawaban: "Energi" }] },
+                            gelombang_elektromagnetik: { judul: "Spektrum Tak Terlihat", konten: "<p>Spektrum gelombang elektromagnetik meliputi gelombang radio, mikro, inframerah, cahaya tampak, ultraviolet, sinar-X, dan sinar gamma.</p>", funFact: "Wi-Fi, Bluetooth, dan sinyal ponsel Anda semuanya adalah bentuk gelombang radio.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Gelombang elektromagnetik dengan energi paling tinggi adalah...", pilihan: ["Gelombang Radio", "Cahaya Tampak", "Sinar Gamma"], jawaban: "Sinar Gamma" }] },
+                        }
+                    },
+                    kimia_sma: {
+                        namaDunia: "Sintesis Kimia Organik", warna: "lime", icon: "⚗️", deskripsi: "Mempelajari senyawa berbasis karbon yang menjadi dasar kehidupan.",
+                        subMateri: {
+                            hidrokarbon: { judul: "Alkana, Alkena, Alkuna", konten: "<p>Hidrokarbon adalah senyawa paling sederhana yang hanya terdiri dari hidrogen dan karbon. Alkana (ikatan tunggal), Alkena (ikatan rangkap dua), Alkuna (ikatan rangkap tiga).</p>", funFact: "Gas alam dan minyak bumi sebagian besar adalah campuran dari berbagai senyawa hidrokarbon.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Senyawa C₂H₄ termasuk dalam deret homolog...", pilihan: ["Alkana", "Alkena", "Alkuna"], jawaban: "Alkena" }] },
+                            gugus_fungsi: { judul: "Alkohol dan Eter", konten: "<p>Gugus fungsi adalah atom atau kelompok atom yang memberikan sifat khas pada senyawa. Gugus -OH adalah alkohol, sedangkan -O- adalah eter.</p>", funFact: "Etanol adalah jenis alkohol yang ditemukan dalam minuman, sementara metanol sangat beracun.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Senyawa dengan gugus fungsi -OH disebut...", pilihan: ["Eter", "Alkohol", "Aldehid"], jawaban: "Alkohol" }] },
+                            benzena: { judul: "Cincin Aromatik Benzena", konten: "<p>Benzena (C₆H₆) adalah senyawa siklik dengan ikatan rangkap terkonjugasi yang sangat stabil. Banyak senyawa turunan benzena penting dalam industri.</p>", funFact: "Struktur cincin benzena pertama kali diusulkan oleh August Kekulé setelah bermimpi tentang seekor ular yang menggigit ekornya sendiri.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Senyawa turunan benzena yang digunakan sebagai bahan peledak adalah...", pilihan: ["Fenol", "Anilina", "TNT (Trinitrotoluena)"], jawaban: "TNT (Trinitrotoluena)" }] },
+                            polimer: { judul: "Rantai Raksasa Polimer", konten: "<p>Polimer adalah molekul raksasa (makromolekul) yang terbentuk dari pengulangan unit-unit kecil (monomer). Contohnya plastik, nilon, dan karet.</p>", funFact: "DNA dan protein dalam tubuh kita juga merupakan contoh polimer alami.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Plastik PET yang digunakan untuk botol minuman adalah contoh...", pilihan: ["Monomer", "Polimer", "Isomer"], jawaban: "Polimer" }] },
+                            redoks_elektrokimia: { judul: "Sel Volta dan Elektrolisis", konten: "<p>Elektrokimia mempelajari hubungan antara reaksi kimia dan energi listrik. Sel Volta mengubah energi kimia menjadi listrik (baterai), sedangkan elektrolisis sebaliknya.</p>", funFact: "Proses penyepuhan logam, seperti melapisi sendok dengan perak, menggunakan prinsip elektrolisis.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Pada sel Volta (baterai), energi kimia diubah menjadi energi...", pilihan: ["Panas", "Cahaya", "Listrik"], jawaban: "Listrik" }] },
+                        }
+                    },
+                    biologi_sma: { 
+                        namaDunia: "Molekul Kehidupan", warna: "emerald", icon: "🦠", deskripsi: "Mendalami genetika, evolusi, dan bioteknologi modern.", 
+                        subMateri: {
+                             genetika: { judul: "Hukum Mendel", konten: "<p>Genetika adalah ilmu pewarisan sifat. Hukum Mendel menjelaskan bagaimana sifat diwariskan dari induk ke keturunannya melalui gen dominan dan resesif.</p>", funFact: "Manusia berbagi sekitar 99.9% DNA yang sama satu sama lain, perbedaan kecil itulah yang membuat kita unik.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Bapak Genetika Modern adalah...", pilihan: ["Charles Darwin", "Gregor Mendel", "Albert Einstein"], jawaban: "Gregor Mendel" }] },
+                             evolusi: { judul: "Teori Evolusi Darwin", konten: "<p>Teori evolusi melalui seleksi alam, yang digagas oleh Charles Darwin, menyatakan bahwa makhluk hidup yang paling bisa beradaptasi dengan lingkungannya yang akan bertahan hidup dan bereproduksi.</p>", funFact: "Bukti evolusi dapat ditemukan pada catatan fosil, anatomi perbandingan, dan genetika molekuler.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Konsep 'Survival of the Fittest' adalah inti dari...", pilihan: ["Hukum Mendel", "Seleksi Alam", "Penciptaan Khusus"], jawaban: "Seleksi Alam" }] },
+                             bioteknologi: { judul: "Bioteknologi", konten: "<p>Bioteknologi adalah pemanfaatan makhluk hidup untuk menghasilkan barang dan jasa. Contoh bioteknologi konvensional adalah pembuatan tempe dan yogurt.</p>", funFact: "Insulin untuk penderita diabetes sekarang diproduksi massal menggunakan bakteri yang telah direkayasa secara genetik.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Pembuatan yogurt menggunakan bakteri adalah contoh bioteknologi...", pilihan: ["Modern", "Konvensional", "Rekayasa"], jawaban: "Konvensional" }] },
+                             metabolisme: { judul: "Metabolisme Sel", konten: "<p>Metabolisme adalah seluruh reaksi kimia yang terjadi di dalam sel. Katabolisme (seperti respirasi sel) memecah molekul untuk menghasilkan energi (ATP).</p>", funFact: "Setiap hari, tubuh Anda mendaur ulang berat badan Anda sendiri dalam bentuk ATP!", kuis: [{ type: "pilihan-ganda", pertanyaan: "Proses pemecahan glukosa untuk menghasilkan energi di dalam sel disebut...", pilihan: ["Fotosintesis", "Respirasi Sel", "Fermentasi"], jawaban: "Respirasi Sel" }] },
+                             sistem_imun: { judul: "Sistem Kekebalan Tubuh", konten: "<p>Sistem imun adalah pertahanan tubuh terhadap patogen seperti bakteri dan virus. Ada pertahanan non-spesifik (kulit) dan spesifik (antibodi).</p>", funFact: "Vaksin bekerja dengan cara 'melatih' sistem imun Anda untuk mengenali dan melawan patogen tertentu tanpa harus sakit terlebih dahulu.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Protein yang diproduksi tubuh untuk melawan antigen spesifik disebut...", pilihan: ["Enzim", "Hormon", "Antibodi"], jawaban: "Antibodi" }] },
+                        } 
+                    },
+                    sejarah_sma: { 
+                        namaDunia: "Peradaban Dunia", warna: "stone", icon: "🏛️", deskripsi: "Menelusuri sejarah peradaban dunia dari zaman kuno hingga modern.", 
+                        subMateri: {
+                            peradaban_kuno: { judul: "Peradaban Kuno", konten: "<p>Peradaban besar pertama muncul di lembah sungai, seperti Mesopotamia (Eufrat & Tigris), Mesir (Nil), India (Indus), dan Cina (Kuning).</p>", funFact: "Bangsa Sumeria di Mesopotamia adalah salah satu peradaban pertama yang mengembangkan tulisan (paku).", kuis: [{ type: "pilihan-ganda", pertanyaan: "Piramida adalah peninggalan monumental dari peradaban...", pilihan: ["Mesopotamia", "Mesir Kuno", "Yunani Kuno"], jawaban: "Mesir Kuno"}] },
+                            yunani_romawi: { judul: "Yunani dan Romawi", konten: "<p>Peradaban Yunani Kuno meletakkan dasar bagi filsafat, demokrasi, dan sains Barat. Kekaisaran Romawi kemudian menyebarkan budaya ini ke seluruh Eropa.</p>", funFact: "Semua jalan menuju Roma ('All roads lead to Rome') adalah peribahasa yang berasal dari sistem jalan raya Romawi yang canggih dan terpusat.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Konsep pemerintahan 'demokrasi' berasal dari kota...", pilihan: ["Sparta", "Roma", "Athena"], jawaban: "Athena"}] },
+                            renaisans: { judul: "Abad Pencerahan", konten: "<p>Renaisans adalah periode 'kelahiran kembali' seni dan ilmu pengetahuan di Eropa setelah Abad Pertengahan, yang berpusat di Italia.</p>", funFact: "Leonardo da Vinci adalah contoh klasik dari 'Manusia Renaisans' yang menguasai banyak bidang, dari melukis hingga teknik.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Lukisan 'Mona Lisa' yang terkenal adalah karya dari...", pilihan: ["Michelangelo", "Raphael", "Leonardo da Vinci"], jawaban: "Leonardo da Vinci"}] },
+                            revolusi_industri: { judul: "Revolusi Industri", konten: "<p>Revolusi Industri, yang dimulai di Inggris pada abad ke-18, mengubah masyarakat dari agraris menjadi industri dengan penemuan mesin uap.", funFact: "Sebelum Revolusi Industri, sebagian besar barang diproduksi dengan tangan di rumah-rumah.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Penemuan yang menjadi pemicu utama Revolusi Industri adalah...", pilihan: ["Mesin Cetak", "Mesin Uap", "Kompas"], jawaban: "Mesin Uap"}] },
+                            perang_dunia: { judul: "Perang Dunia I & II", konten: "<p>Dua perang dunia pada abad ke-20 mengubah peta politik global dan menyebabkan penderitaan yang luar biasa, serta mendorong pembentukan PBB.</p>", funFact: "Perang Dunia I dikenal dengan taktik 'perang parit' yang statis dan mematikan.", kuis: [{ type: "pilihan-ganda", pertanyaan: "Perserikatan Bangsa-Bangsa (PBB) dibentuk setelah...", pilihan: ["Perang Dunia I", "Perang Dunia II", "Perang Dingin"], jawaban: "Perang Dunia II"}] },
+                        } 
+                    },
+                    ekonomi_sma: { namaDunia: "Pasar Modal Global", warna: "amber", icon: "💰", deskripsi: "Mengupas makroekonomi, kebijakan fiskal, dan perdagangan internasional.", subMateri: { /* Konten ditambahkan di sini */ } },
+                    geografi_sma: { namaDunia: "Geopolitik Dunia", warna: "teal", icon: "🌐", deskripsi: "Memahami isu-isu global dan sistem informasi geografis.", subMateri: { /* Konten ditambahkan di sini */ } },
+                    sosiologi_sma: { namaDunia: "Agora Sosiologi", warna: "cyan", icon: "👨‍👩‍👧‍👦", deskripsi: "Menganalisis struktur, konflik, dan perubahan dalam masyarakat.", subMateri: { /* Konten ditambahkan di sini */ } },
+                    sastra_sma: { namaDunia: "Literary Circle", warna: "rose", icon: "📖", deskripsi: "Mengkaji karya sastra dunia dan teori-teori kritik sastra.", subMateri: { /* Konten ditambahkan di sini */ } },
+                    tik_sma: { namaDunia: "Studio Informatika", warna: "blue", icon: "👨‍💻", deskripsi: "Mempelajari algoritma, logika pemrograman, dan dampak teknologi.", subMateri: { /* Konten ditambahkan di sini */ } },
+                }
+            },
+        };
 
-            this.dom.buttons.gallery.addEventListener('click', () => {
-                this.playSound('click');
-                this.showGalleryModal();
-            });
+        // --- Variabel & State Aplikasi ---
+        const domElements = { 
+            screens: document.querySelectorAll('.screen'), 
+            modals: document.querySelectorAll('.modal-overlay'),
+            loadingScreen: document.getElementById('loading-screen'),
+            userListContainer: document.getElementById('user-list-container'), 
+            addNewUserBtn: document.getElementById('add-new-user-btn'), 
+            playerNameInput: document.getElementById('player-name-input'), 
+            avatarSelectionContainer: document.getElementById('avatar-selection-container'),
+            nextToLevelBtn: document.getElementById('next-to-level-btn'), 
+            cancelNewUserBtn: document.getElementById('cancel-new-user-btn'), 
+            jenjangPromptName: document.getElementById('jenjang-prompt-name'), 
+            welcomeMessage: document.getElementById('welcome-message'), 
+            pointsDisplay: document.getElementById('points-display'), 
+            userAvatarHeader: document.getElementById('user-avatar-header'), 
+            duniaContainer: document.getElementById('dunia-container'), 
+            submateriContainer: document.getElementById('submateri-container'), 
+            submateriTitle: document.getElementById('submateri-title'), 
+            materiContent: document.getElementById('materi-content'), 
+            backToWorldsBtn: document.getElementById('back-to-worlds-btn'), 
+            backToSubmateriBtn: document.getElementById('back-to-submateri-btn'), 
+            settingsBtn: document.getElementById('settings-btn'), 
+            achievementsBtn: document.getElementById('achievements-btn'), 
+            soundToggleBtn: document.getElementById('sound-toggle-btn'),
+            themeSelector: document.getElementById('theme-selector'),
+            resetProgressBtn: document.getElementById('reset-progress-btn'), 
+            resetUsernameConfirm: document.getElementById('reset-username-confirm'), 
+            cancelResetBtn: document.getElementById('cancel-reset-btn'), 
+            confirmResetBtn: document.getElementById('confirm-reset-btn'), 
+            funFactText: document.getElementById('fun-fact-text'), 
+            closeFunFactBtn: document.getElementById('close-fun-fact-btn'), 
+            achievementsList: document.getElementById('achievements-list'), 
+            leaderboardBtn: document.getElementById('leaderboard-btn'),
+            leaderboardList: document.getElementById('leaderboard-list'),
+            dailyMissionBtn: document.getElementById('daily-mission-btn'),
+            dailyMissionText: document.getElementById('daily-mission-text'),
+            missionProgressBar: document.getElementById('mission-progress-bar'),
+            claimMissionRewardBtn: document.getElementById('claim-mission-reward-btn'),
+            animationContainer: document.getElementById('animation-container'),
+            streakDisplay: document.getElementById('streak-display'),
+            dailyBonusAmount: document.getElementById('daily-bonus-amount'),
+            dailyStreakBonusText: document.getElementById('daily-streak-bonus-text'),
+            shopHubBtn: document.getElementById('shop-hub-btn'),
+            hubPointsDisplay: document.getElementById('hub-points-display'),
+            shopHubContainer: document.getElementById('shop-hub-container'),
+            genericShopTitle: document.getElementById('generic-shop-title'),
+            genericShopPoints: document.getElementById('generic-shop-points'),
+            genericShopContainer: document.getElementById('generic-shop-container'),
+            changeUserHeader: document.getElementById('change-user-header'),
+        };
 
-            this.dom.creator.tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    this.activeCreatorTab = tab.dataset.tab;
-                    this.renderCreatorOptions();
-                });
-            });
-        }
+        let userProfiles = [];
+        let currentUserIndex = -1;
+        let activeUser = null;
+        let currentDuniaId = null;
+        
+        const sounds = { 
+            click: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.1 } }).toDestination(), 
+            correct: new Tone.Synth({ oscillator: { type: "triangle" }, envelope: { attack: 0.01, decay: 0.3, sustain: 0.1, release: 0.2 } }).toDestination(), 
+            wrong: new Tone.Synth({ oscillator: { type: "square" }, envelope: { attack: 0.01, decay: 0.5, sustain: 0, release: 0.2 } }).toDestination(), 
+            badge: new Tone.Synth({ oscillator: { type: "sawtooth" }, envelope: { attack: 0.1, decay: 0.5, sustain: 0.2, release: 0.5 } }).toDestination(),
+            open: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 } }).toDestination(),
+            purchase: new Tone.Synth({ oscillator: { type: "triangle8" }, envelope: { attack: 0.01, decay: 0.4, sustain: 0.1, release: 0.2 } }).toDestination(),
+            equip: new Tone.Synth({ oscillator: { type: "sine" }, envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 0.1 } }).toDestination(),
+        };
 
-        showScreen(screenName) {
-            Object.values(this.dom.screens).forEach(s => s.classList.add('hidden'));
-            this.dom.screens[screenName].classList.remove('hidden');
-        }
+        const colorMapping = { 
+            green: { bg: 'bg-green-100', text: 'text-green-800', border: 'border-green-400', progress: 'bg-green-500' }, 
+            blue: { bg: 'bg-blue-100', text: 'text-blue-800', border: 'border-blue-400', progress: 'bg-blue-500' },
+            purple: { bg: 'bg-purple-100', text: 'text-purple-800', border: 'border-purple-400', progress: 'bg-purple-500' },
+            red: { bg: 'bg-red-100', text: 'text-red-800', border: 'border-red-400', progress: 'bg-red-500' },
+            stone: { bg: 'bg-stone-100', text: 'text-stone-800', border: 'border-stone-400', progress: 'bg-stone-500' },
+            yellow: { bg: 'bg-yellow-100', text: 'text-yellow-800', border: 'border-yellow-400', progress: 'bg-yellow-500' },
+            orange: { bg: 'bg-orange-100', text: 'text-orange-800', border: 'border-orange-400', progress: 'bg-orange-500' },
+            pink: { bg: 'bg-pink-100', text: 'text-pink-800', border: 'border-pink-400', progress: 'bg-pink-500' },
+            teal: { bg: 'bg-teal-100', text: 'text-teal-800', border: 'border-teal-400', progress: 'bg-teal-500' },
+            fuchsia: { bg: 'bg-fuchsia-100', text: 'text-fuchsia-800', border: 'border-fuchsia-400', progress: 'bg-fuchsia-500' },
+            lime: { bg: 'bg-lime-100', text: 'text-lime-800', border: 'border-lime-400', progress: 'bg-lime-500' },
+            emerald: { bg: 'bg-emerald-100', text: 'text-emerald-800', border: 'border-emerald-400', progress: 'bg-emerald-500' },
+            cyan: { bg: 'bg-cyan-100', text: 'text-cyan-800', border: 'border-cyan-400', progress: 'bg-cyan-500' },
+            amber: { bg: 'bg-amber-100', text: 'text-amber-800', border: 'border-amber-400', progress: 'bg-amber-500' },
+        };
 
-        showModal(modalName, contentHTML) {
-            Object.values(this.dom.modals).forEach(m => m.classList.add('hidden'));
-            const modal = this.dom.modals[modalName];
-            modal.innerHTML = contentHTML;
-            modal.classList.remove('hidden');
-            this.dom.modalOverlay.classList.remove('hidden');
-        }
+        // --- Fungsi-fungsi Aplikasi ---
 
-        hideAllModals() {
-            this.dom.modalOverlay.classList.add('hidden');
-        }
-
-        toggleSound() {
-            this.state.soundEnabled = !this.state.soundEnabled;
-            this.updateSoundUI();
-            if (this.state.soundEnabled && this.dom.audio.bgMusic.paused) {
-                 this.dom.audio.bgMusic.play().catch(e => {});
-            } else {
-                this.dom.audio.bgMusic.pause();
-            }
-            this.saveGame();
-        }
-
-        updateSoundUI() {
-            this.dom.buttons.toggleSound.textContent = this.state.soundEnabled ? '🔊' : '🔇';
-            this.dom.audio.bgMusic.volume = 0.3;
-        }
-
-        playSound(soundName) {
-            if (this.state.soundEnabled && this.dom.audio[soundName]) {
-                const sound = this.dom.audio[soundName];
-                sound.currentTime = 0;
-                sound.volume = soundName === 'click' ? 0.5 : 1.0;
-                sound.play();
-            }
-        }
-
-        // --- Character Creator Rework ---
-        setupCreator() {
-            this.activeCreatorTab = 'suitColor';
-            this.renderCreatorOptions();
-            this.renderCreatorPreview();
-        }
-
-        renderCreatorOptions() {
-            this.dom.creator.tabs.forEach(t => {
-                t.classList.toggle('active', t.dataset.tab === this.activeCreatorTab);
-            });
-
-            const key = this.activeCreatorTab;
-            const data = this.creatorData.astronaut.options[key];
-            const stateValue = this.state.astronaut[key];
-            let html = `<div class="p-2">
-                            <h3 class="font-bold text-2xl mb-4 text-cyan-300">${data.label}</h3>`;
+        function createNewUser(name, avatarId) {
+            const starterAvatars = Object.keys(avatarData).filter(id => avatarData[id].isStarter);
+            const starterItems = Object.keys(shopData.tokoKustomisasi.items).filter(id => shopData.tokoKustomisasi.items[id].isStarter);
             
-            if (key === 'suitColor') {
-                html += `<div class="flex items-center gap-4">
-                            <input type="color" id="suit-color-picker" value="${stateValue}" class="choice-item">
-                            <label for="suit-color-picker" class="text-lg">Pilih Warnamu</label>
-                         </div>`;
-            } else {
-                html += `<div class="grid grid-cols-3 md:grid-cols-4 gap-4">`;
-                data.items.forEach((item, index) => {
-                    const valueAttr = index + 1;
-                    const isSelected = (stateValue == valueAttr);
-                    html += `<button class="choice-item aspect-square rounded-lg bg-black/30 p-1 flex items-center justify-center ${isSelected ? 'selected' : ''}" data-key="${key}" data-value="${valueAttr}">${item}</button>`;
-                });
-                html += `</div>`;
-            }
-            html += `</div>`;
-            this.dom.creator.optionsPanel.innerHTML = html;
-            this.addCreatorListeners();
+            const u = {
+                id: Date.now(),
+                name: name,
+                avatarId: avatarId,
+                jenjang: null,
+                points: 100, // Starting points
+                progress: {},
+                achievements: [],
+                dailyMission: generateNewMission(),
+                lastLogin: null,
+                loginStreak: 0,
+                inventory: {
+                    ...starterAvatars.reduce((acc, curr) => ({...acc, [curr]: { type: 'avatar' }}), {}),
+                    ...starterItems.reduce((acc, curr) => ({...acc, [curr]: { type: 'theme' }}), {})
+                },
+                equipment: {
+                    avatar: avatarId,
+                    theme: 'theme_light',
+                },
+                settings: { soundOn: true, theme: 'light' },
+            };
+            userProfiles.push(u);
+            currentUserIndex = userProfiles.length - 1;
+            activeUser = u;
+            saveData();
+            domElements.jenjangPromptName.textContent = `Hai ${activeUser.name}, ayo pilih jenjangmu!`;
+            switchScreen('jenjang-screen');
         }
         
-        addCreatorListeners() {
-            if (this.activeCreatorTab === 'suitColor') {
-                const colorPicker = document.getElementById('suit-color-picker');
-                colorPicker.addEventListener('input', (e) => {
-                    this.state.astronaut.suitColor = e.target.value;
-                    this.renderCreatorPreview();
-                });
-            } else {
-                this.dom.creator.optionsPanel.querySelectorAll('.choice-item').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        this.playSound('click');
-                        const { key, value } = e.currentTarget.dataset;
-                        this.state.astronaut[key] = parseInt(value);
-                        this.renderCreatorOptions();
-                        this.renderCreatorPreview();
-                    });
-                });
-            }
-        }
-
-        renderCreatorPreview() {
-            const astro = this.state.astronaut;
-            const data = this.creatorData.astronaut.options;
-            const hair = data.hairStyle.items[astro.hairStyle - 1];
-            const face = data.face.items[astro.face - 1];
-            this.dom.creator.preview.innerHTML = this.creatorData.astronaut.baseSVG(astro.suitColor, hair, face);
-        }
-
-        // --- Game Logic ---
-        startGame() {
-            this.showScreen('game');
-            this.renderSolarSystem();
-            this.updateHUD();
-        }
-
-        updateHUD() {
-            this.dom.gameplay.crystalCount.textContent = `${this.state.crystals} / 8`;
-            const astro = this.state.astronaut;
-            const face = this.creatorData.astronaut.options.face.items[astro.face - 1];
-            this.dom.gameplay.avatarInGame.innerHTML = this.creatorData.astronaut.headSVG(astro.suitColor, face);
-        }
-
-        renderSolarSystem() {
-            let html = '';
-            const containerSize = this.dom.gameplay.solarSystem.offsetWidth;
-
-            this.planetData.forEach((p) => {
-                const orbitRadius = containerSize * (p.orbit / 100);
-                const completedClass = this.state.completedPlanets.includes(p.id) ? 'opacity-50' : '';
-
-                html += `<div class="orbit" style="width:${p.orbit * 2}%; height:${p.orbit * 2}%;"></div>`;
-                html += `
-                    <div id="${p.id}" class="planet ${completedClass}" style="
-                        width:${p.size}px; height:${p.size}px;
-                        background-color:${p.color};
-                        --orbit-radius: ${orbitRadius}px;
-                        animation-duration: ${p.duration}s;
-                        animation-delay: -${p.angle / 360 * p.duration}s;
-                    ">
-                        ${this.state.completedPlanets.includes(p.id) ? '<span class="text-3xl">✔️</span>' : ''}
-                        <div class="planet-label">${p.name}</div>
-                    </div>`;
-            });
-            this.dom.gameplay.solarSystem.innerHTML = html;
-
-            document.querySelectorAll('.planet').forEach(p => {
-                p.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.handlePlanetClick(p.id);
-                });
-            });
-        }
-
-        handlePlanetClick(planetId) {
-            this.playSound('click');
-            const data = this.planetData.find(p => p.id === planetId);
+        function initializeProgressForJenjang(jenjang) {
+            if (!edukasiData[jenjang] || !activeUser) return;
+            if (!activeUser.progress) activeUser.progress = {};
+            if (activeUser.progress[jenjang]) return; // Already initialized
             
-            let missionButtonHTML = `<button id="start-mission-btn" class="btn-primary w-full mt-6">Mulai Misi!</button>`;
-            if (this.state.completedPlanets.includes(planetId)) {
-                missionButtonHTML = `<p class="mt-6 text-green-400 font-bold text-xl">✔️ Misi Selesai!</p>`;
-            }
-
-            const content = `
-                <h2 class="font-title text-4xl text-glow mb-4">${data.name}</h2>
-                <p class="text-lg mb-6">${data.facts[0]}</p>
-                <div class="grid grid-cols-3 gap-4 text-center mb-6 p-4 bg-black/20 rounded-lg">
-                    <div><p class="text-sm text-cyan-300">TIPE</p><p class="text-xl font-bold">${data.type}</p></div>
-                    <div><p class="text-sm text-cyan-300">SUHU</p><p class="text-xl font-bold">${data.temp}</p></div>
-                    <div><p class="text-sm text-cyan-300">SATELIT</p><p class="text-xl font-bold">${data.moons}</p></div>
-                </div>
-                ${missionButtonHTML}
-                <button id="close-info-btn" class="absolute top-4 right-4 text-3xl">&times;</button>
-            `;
-            this.showModal('planetInfo', content);
-
-            document.getElementById('close-info-btn').addEventListener('click', () => this.hideAllModals());
-            if (!this.state.completedPlanets.includes(planetId)) {
-                document.getElementById('start-mission-btn').addEventListener('click', () => {
-                    this.playSound('click');
-                    this.startMiniGame(planetId);
-                });
-            }
-        }
-
-        startMiniGame(planetId) {
-            const data = this.planetData.find(p => p.id === planetId);
-            const content = `
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="font-title text-3xl text-glow">Misi di Planet ${data.name}</h2>
-                    <button id="close-game-btn" class="text-3xl">&times;</button>
-                </div>
-                <div id="game-instructions" class="text-center mb-4 text-lg">${data.game.instructions}</div>
-                <div id="game-area" class="bg-black/30 rounded-lg aspect-video w-full"></div>`;
-            this.showModal('miniGame', content);
-            document.getElementById('close-game-btn').addEventListener('click', () => this.hideAllModals());
-
-            if (this.currentMiniGame && this.currentMiniGame.destroy) this.currentMiniGame.destroy();
-            const gameArea = document.getElementById('game-area');
-            const gameClass = data.game.type === 'quiz' ? QuizGame : SortingGame;
-            this.currentMiniGame = new gameClass(gameArea, data.game, (result) => this.endMiniGame(planetId, result));
-        }
-
-        endMiniGame(planetId, success) {
-            this.hideAllModals();
-            if (success) {
-                this.playSound('success');
-                if (!this.state.completedPlanets.includes(planetId)) {
-                    this.state.crystals++;
-                    this.state.completedPlanets.push(planetId);
-                    this.updateHUD();
-                    this.renderSolarSystem();
-                    this.saveGame();
+            activeUser.progress[jenjang] = {};
+            for (const duniaId in edukasiData[jenjang].dunia) {
+                activeUser.progress[jenjang][duniaId] = {};
+                for (const submateriId in edukasiData[jenjang].dunia[duniaId].subMateri) {
+                    activeUser.progress[jenjang][duniaId][submateriId] = { done: false };
                 }
-            } else {
-                this.playSound('fail');
             }
+            saveData();
         }
 
-        showGalleryModal() {
-            let itemsHTML = '';
-            if (this.state.completedPlanets.length === 0) {
-                 itemsHTML = `<p class="text-center text-xl col-span-full">Kumpulkan Kristal untuk membuka data planet!</p>`;
-            } else {
-                this.planetData.forEach(pdata => {
-                    const isUnlocked = this.state.completedPlanets.includes(pdata.id);
-                    itemsHTML += `
-                        <div class="text-center p-4 bg-black/${isUnlocked ? '30' : '50'} rounded-lg ${isUnlocked ? '' : 'opacity-50'}">
-                            <div class="w-16 h-16 rounded-full mx-auto mb-2" style="background-color:${pdata.color};"></div>
-                            <p class="font-bold">${isUnlocked ? pdata.name : '???'}</p>
-                         </div>`;
-                });
-            }
+        function checkDailyLogin() {
+            if (!activeUser) return;
+            const today = new Date().toDateString();
+            if (activeUser.lastLogin === today) return;
 
-            const content = `
-                <div class="flex justify-between items-center mb-4">
-                    <h2 class="font-title text-3xl text-glow">Galeri Pengetahuan</h2>
-                    <button id="close-gallery-btn" class="text-3xl">&times;</button>
-                </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 overflow-y-auto h-full pr-2">
-                    ${itemsHTML}
-                </div>
-            `;
-            this.showModal('gallery', content);
-            document.getElementById('close-gallery-btn').addEventListener('click', () => this.hideAllModals());
+            const yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            
+            if (activeUser.lastLogin === yesterday.toDateString()) {
+                activeUser.loginStreak = (activeUser.loginStreak || 0) + 1;
+            } else {
+                activeUser.loginStreak = 1;
+            }
+            
+            const baseBonus = 50;
+            const streakBonus = activeUser.loginStreak * 10;
+            const totalBonus = baseBonus + streakBonus;
+            
+            activeUser.lastLogin = today;
+            activeUser.dailyMission = generateNewMission(); // Generate new mission on new day
+            addPoints(totalBonus, false);
+            
+            domElements.dailyBonusAmount.textContent = `${totalBonus} Poin`;
+            domElements.dailyStreakBonusText.textContent = activeUser.loginStreak > 1 ? `Bonus beruntun ${activeUser.loginStreak} hari: +${streakBonus} poin!` : "Kembali besok untuk bonus lebih besar!";
+            showModal('daily-bonus-modal');
+            
+            saveData();
+            updateUI();
         }
 
-        getCreatorData() {
-             return {
-                astronaut: {
-                    baseSVG: (suitColor, hair, face) => `<svg viewBox="0 0 150 250"><defs><g id="helmet"><circle cx="75" cy="60" r="50" fill="#e5e7eb"/><path d="M45 40 C 40 60, 40 80, 45 100" stroke="#c0c0c0" stroke-width="3" fill="none"/><circle cx="75" cy="60" r="40" fill="#60a5fa" opacity="0.5"/></g><g id="body"><path d="M40 100 C 20 120, 20 200, 50 220 L 100 220 C 130 200, 130 120, 110 100 Z" fill="${suitColor}"/><rect x="65" y="110" width="20" height="50" fill="#b0b0b0" rx="5"/></g></defs><use href="#body"/><use href="#helmet"/><g transform="translate(0, 5)">${hair}</g>${face}</svg>`,
-                    headSVG: (suitColor, face) => `<svg viewBox="0 0 150 150"><g transform="translate(0, 15)"><circle cx="75" cy="60" r="50" fill="#e5e7eb"/><circle cx="75" cy="60" r="40" fill="${suitColor}" opacity="0.8"/>${face}</g></svg>`,
-                    options: {
-                        suitColor: { label: "Warna Baju" },
-                        hairStyle: { label: "Gaya Rambut", items: [`<path d="M45 40 C 60 15, 90 15, 105 40 Q 105 60, 45 60 Z" fill="#facc15"/>`, `<path d="M45 35 C 40 10, 110 10, 105 35 L 100 60 L 50 60 Z" fill="#a16207"/>`, `<path d="M50 30 L100 30 L100 10 L85 25 L75 10 L65 25 Z" fill="#1e293b"/>`] },
-                        face: { label: "Ekspresi Wajah", items: [`<g transform="translate(0, 5)"><circle cx="65" cy="60" r="5" fill="black"/><circle cx="85" cy="60" r="5" fill="black"/><path d="M65 75 Q75 85 85 75" stroke="black" fill="none" stroke-width="3" stroke-linecap="round"/></g>`, `<g transform="translate(0, 5)"><rect x="60" y="55" width="8" height="12" fill="black"/><rect x="82" y="55" width="8" height="12" fill="black"/><rect x="68" y="78" width="14" height="4" rx="2" fill="black"/></g>`] }
+        function updateUI() {
+            if (!activeUser) return;
+            domElements.welcomeMessage.textContent = `Halo, ${activeUser.name}!`;
+            domElements.userAvatarHeader.innerHTML = avatarData[activeUser.equipment.avatar].svg;
+            domElements.streakDisplay.innerHTML = activeUser.loginStreak > 1 ? `🔥 ${activeUser.loginStreak}` : '';
+            domElements.pointsDisplay.textContent = `💰 ${activeUser.points}`;
+        }
+        
+        function showAnimation(text) {
+            const animEl = document.createElement('div');
+            animEl.className = 'point-animation';
+            animEl.textContent = text;
+            domElements.animationContainer.appendChild(animEl);
+            setTimeout(() => animEl.remove(), 1500);
+        }
+
+        function addPoints(amount, withAnimation = true) {
+            if (!activeUser) return;
+            activeUser.points += amount;
+            if(withAnimation && amount > 0) showAnimation(`+${amount} Poin`);
+            saveData();
+            updateUI();
+        }
+
+        function handleQuizAnswer(isCorrect, funFact) {
+            const feedbackEl = domElements.materiContent.querySelector('#quiz-feedback');
+            const isCompleted = activeUser.progress[activeUser.jenjang]?.[currentDuniaId]?.[currentSubmateriId]?.done;
+
+            if (isCorrect) {
+                playSound('correct');
+                feedbackEl.textContent = 'Jawaban Benar! Kamu Hebat!';
+                feedbackEl.className = 'mt-4 text-lg font-bold text-green-600';
+                if (!isCompleted) {
+                    addPoints(10);
+                    activeUser.progress[activeUser.jenjang][currentDuniaId][currentSubmateriId] = { done: true };
+                    
+                    // Update mission progress
+                    if (activeUser.dailyMission && activeUser.dailyMission.type === 'complete_quizzes' && !activeUser.dailyMission.claimed) {
+                        activeUser.dailyMission.current++;
                     }
+                    checkAchievements();
+                    saveData();
                 }
+                setTimeout(() => {
+                    domElements.funFactText.textContent = funFact;
+                    showModal('fun-fact-modal');
+                }, 1000);
+            } else {
+                playSound('wrong');
+                feedbackEl.textContent = 'Jawaban kurang tepat, coba lagi!';
+                feedbackEl.className = 'mt-4 text-lg font-bold text-red-600';
+                const quizOptions = domElements.materiContent.querySelector('#quiz-options');
+                if (quizOptions) {
+                    quizOptions.classList.add('animate-shake');
+                    setTimeout(() => quizOptions.classList.remove('animate-shake'), 500);
+                }
+            }
+            domElements.materiContent.querySelectorAll('#quiz-options button').forEach(btn => btn.disabled = true);
+        }
+        
+        function renderDuniaMap() {
+            const jenjang = activeUser.jenjang;
+            const dataDunia = edukasiData[jenjang].dunia;
+            domElements.duniaContainer.innerHTML = '';
+            for (const duniaId in dataDunia) {
+                const dunia = dataDunia[duniaId];
+                const c = colorMapping[dunia.warna] || colorMapping.blue;
+                const progress = activeUser.progress[jenjang]?.[duniaId] || {};
+                const total = Object.keys(dunia.subMateri).length;
+                const completed = Object.values(progress).filter(p => p.done).length;
+                const percentage = total > 0 ? (completed / total) * 100 : 0;
+                const card = document.createElement('div');
+                card.className = `p-6 rounded-2xl shadow-lg cursor-pointer card-hover border-4 ${c.border} flex flex-col`;
+                card.style.backgroundColor = `var(--card-bg-color)`;
+                card.innerHTML = `<div class="text-5xl text-center mb-4">${dunia.icon}</div><h3 class="font-brand text-2xl text-center ${c.text}">${dunia.namaDunia}</h3><p class="text-sm mt-2 text-center flex-grow">${dunia.deskripsi}</p><div class="mt-4"><div class="text-xs font-semibold text-center mb-1">${completed} / ${total} Selesai</div><div class="w-full bg-gray-200 rounded-full h-2.5"><div class="${c.progress} h-2.5 rounded-full" style="width: ${percentage}%;"></div></div></div>`;
+                card.addEventListener('click', () => {
+                    playSound('click');
+                    currentDuniaId = duniaId;
+                    renderSubMateri(duniaId);
+                    switchScreen('submateri-screen');
+                });
+                domElements.duniaContainer.appendChild(card);
+            }
+        }
+        
+        function renderSubMateri(duniaId) { 
+            const dunia = edukasiData[activeUser.jenjang].dunia[duniaId];
+            const colors = colorMapping[dunia.warna] || colorMapping.blue;
+            domElements.submateriTitle.textContent = dunia.namaDunia;
+            domElements.submateriTitle.className = `font-brand text-4xl md:text-5xl text-center ${colors.text}`;
+            domElements.submateriContainer.innerHTML = '';
+            for (const submateriId in dunia.subMateri) {
+                const submateri = dunia.subMateri[submateriId];
+                const isCompleted = activeUser.progress[activeUser.jenjang]?.[duniaId]?.[submateriId]?.done;
+                const card = document.createElement('div');
+                card.className = `p-5 rounded-xl shadow-md flex items-center justify-between border-2 ${colors.border} cursor-pointer card-hover`;
+                card.innerHTML = `<span class="font-semibold ${colors.text}">${submateri.judul}</span> ${isCompleted ? `<span class="text-2xl text-yellow-500 star-animation">⭐</span>` : `<span class="w-6 h-6 rounded-full border-2 ${colors.border}"></span>`}`; 
+                card.addEventListener('click', () => { 
+                    playSound('click'); 
+                    currentSubmateriId = submateriId; 
+                    renderMateri(duniaId, submateriId); 
+                    switchScreen('materi-screen'); 
+                });
+                domElements.submateriContainer.appendChild(card);
+            }
+        }
+
+        let currentSubmateriId = null;
+        function renderMateri(duniaId, submateriId) { 
+            const materi = edukasiData[activeUser.jenjang].dunia[duniaId].subMateri[submateriId];
+            const quiz = materi.kuis[0];
+            let optionsHTML = '';
+            if (quiz.type === 'pilihan-ganda') { 
+                const shuffledOptions = [...quiz.pilihan].sort(() => .5 - Math.random());
+                shuffledOptions.forEach(o => { 
+                    const isCorrect = o.toLowerCase() === quiz.jawaban.toLowerCase();
+                    optionsHTML += `<button data-correct="${isCorrect}" class="quiz-option w-full text-left p-4 my-2 border-2 rounded-lg font-semibold transition-colors hover:bg-gray-100">${o}</button>`; 
+                }); 
+            }
+            
+            domElements.materiContent.innerHTML = `
+                <h2 class="font-brand text-3xl mb-4">${materi.judul}</h2>
+                <div class="prose max-w-none mb-6">${materi.konten}</div>
+                <hr class="my-6">
+                <h3 class="font-bold text-xl mb-3">Tantangan Cepat!</h3>
+                <p class="mb-4 text-lg">${quiz.pertanyaan}</p>
+                <div id="quiz-options">${optionsHTML}</div>
+                <div id="quiz-feedback" class="mt-4 text-lg font-bold h-6"></div>`;
+
+            domElements.materiContent.querySelectorAll('.quiz-option').forEach(b => {
+                b.addEventListener('click', (e) => {
+                    const isCorrect = e.target.dataset.correct === 'true';
+                    handleQuizAnswer(isCorrect, materi.funFact);
+                });
+            });
+        }
+        
+        function setupNewUserScreen() {
+            domElements.playerNameInput.value = '';
+            domElements.nextToLevelBtn.disabled = true;
+            domElements.avatarSelectionContainer.innerHTML = '';
+            selectedAvatarId = null;
+
+            Object.keys(avatarData).filter(id => avatarData[id].isStarter).forEach(avatarId => {
+                const avatarEl = document.createElement('div');
+                avatarEl.className = 'avatar-selection w-20 h-20 p-1';
+                avatarEl.dataset.avatarId = avatarId;
+                avatarEl.innerHTML = avatarData[avatarId].svg;
+                avatarEl.addEventListener('click', () => {
+                    document.querySelectorAll('.avatar-selection').forEach(el => el.classList.remove('selected'));
+                    avatarEl.classList.add('selected');
+                    selectedAvatarId = avatarId;
+                    domElements.nextToLevelBtn.disabled = !domElements.playerNameInput.value.trim();
+                });
+                domElements.avatarSelectionContainer.appendChild(avatarEl);
+            });
+        }
+        
+        function startSession() {
+            applySettings();
+            checkDailyLogin();
+            updateUI();
+            switchScreen('map-screen');
+            renderDuniaMap();
+        }
+        
+        function initializeApp() {
+            setTimeout(() => {
+                if (loadData() && userProfiles.length > 0) { 
+                    renderUserSelectionScreen();
+                } else { 
+                    setupNewUserScreen();
+                    switchScreen('name-entry-screen');
+                }
+            }, 500);
+        }
+
+        function renderUserSelectionScreen() {
+            domElements.userListContainer.innerHTML = ''; 
+            userProfiles.forEach((user, index) => {
+                const card = document.createElement('div');
+                card.className = 'user-card p-4 rounded-2xl shadow-lg text-center cursor-pointer card-hover';
+                card.style.backgroundColor = 'var(--card-bg-color)';
+                card.innerHTML = `${avatarData[user.equipment.avatar]?.svg || ''}<h3 class="font-bold text-xl mt-2">${user.name}</h3>`;
+                card.addEventListener('click', () => { 
+                    playSound('click'); 
+                    currentUserIndex = index; 
+                    activeUser = userProfiles[index];
+                    if (!activeUser.jenjang) {
+                        domElements.jenjangPromptName.textContent = `Hai ${activeUser.name}, ayo pilih jenjangmu!`;
+                        switchScreen('jenjang-screen');
+                    } else {
+                        startSession();
+                    }
+                });
+                domElements.userListContainer.appendChild(card);
+            });
+            switchScreen('user-selection-screen');
+        }
+
+        // --- Shop Functions ---
+        function renderShopHub() {
+            domElements.hubPointsDisplay.textContent = `💰 ${activeUser.points}`;
+            domElements.shopHubContainer.innerHTML = '';
+            for (const shopId in shopData) {
+                const shop = shopData[shopId];
+                const shopEl = document.createElement('div');
+                shopEl.className = 'p-6 rounded-2xl cursor-pointer card-hover border-2';
+                shopEl.dataset.shopId = shopId;
+                shopEl.innerHTML = `
+                    <div class="text-5xl mb-2">${shop.icon}</div>
+                    <h4 class="font-bold text-xl">${shop.title}</h4>
+                `;
+                shopEl.addEventListener('click', () => {
+                    hideModals();
+                    renderGenericShop(shopId);
+                });
+                domElements.shopHubContainer.appendChild(shopEl);
+            }
+            showModal('shop-hub-modal');
+        }
+
+        function renderGenericShop(shopId) {
+            const shop = shopData[shopId];
+            domElements.genericShopTitle.textContent = `${shop.icon} ${shop.title}`;
+            domElements.genericShopPoints.textContent = `💰 ${activeUser.points}`;
+            domElements.genericShopContainer.innerHTML = '';
+            
+            for (const itemId in shop.items) {
+                const item = shop.items[itemId];
+                const isOwned = activeUser.inventory[itemId];
+                const isEquipped = activeUser.equipment.avatar === itemId || activeUser.equipment.theme === itemId;
+                
+                const itemEl = document.createElement('div');
+                itemEl.className = `shop-item p-4 flex flex-col items-center justify-center text-center ${isOwned ? 'owned' : ''} ${isEquipped ? 'equipped' : ''}`;
+                itemEl.dataset.itemId = itemId;
+                itemEl.dataset.shopId = shopId;
+                
+                const itemIcon = item.svg ? item.svg : `<div class="text-6xl">${item.icon}</div>`;
+                itemEl.innerHTML = `
+                    ${itemIcon}
+                    <p class="font-semibold mt-2 text-sm">${item.name}</p>
+                    ${!isOwned ? `<div class="price-tag">💰 ${item.price}</div>` : ''}
+                `;
+                
+                itemEl.addEventListener('click', () => handleShopItemClick(shopId, itemId));
+                domElements.genericShopContainer.appendChild(itemEl);
+            }
+            showModal('generic-shop-modal');
+        }
+
+        function handleShopItemClick(shopId, itemId) {
+            const shop = shopData[shopId];
+            const item = shop.items[itemId];
+            const isOwned = activeUser.inventory[itemId];
+
+            if (isOwned) {
+                // Equip item
+                if (shopId === 'tokoAvatar') {
+                    activeUser.equipment.avatar = itemId;
+                    playSound('equip');
+                } else if (shopId === 'tokoKustomisasi') {
+                    activeUser.equipment.theme = itemId;
+                    activeUser.settings.theme = itemId.replace('theme_', ''); // e.g. 'theme_dark' -> 'dark'
+                    applySettings();
+                    playSound('equip');
+                }
+                saveData();
+                updateUI();
+                renderGenericShop(shopId); // Re-render to show equipped status
+            } else {
+                // Buy item
+                if (activeUser.points >= item.price) {
+                    activeUser.points -= item.price;
+                    activeUser.inventory[itemId] = { type: item.type || shopId };
+                    playSound('purchase');
+                    addPoints(0, false); // Just to update UI
+                    saveData();
+                    renderGenericShop(shopId); // Re-render to show owned status
+                } else {
+                    playSound('wrong');
+                    const shopModal = document.getElementById('generic-shop-modal');
+                    shopModal.querySelector('.modal-content').classList.add('animate-shake');
+                    setTimeout(()=>shopModal.querySelector('.modal-content').classList.remove('animate-shake'), 500)
+                }
+            }
+        }
+        
+        // --- Missions and Achievements ---
+        const allAchievements = {
+            'first_quiz': { title: "Langkah Pertama", description: "Menyelesaikan kuis pertamamu.", icon: "👟" },
+            'explorer_sd': { title: "Penjelajah Cilik", description: "Menyelesaikan 1 dunia di jenjang SD.", icon: "🧭" },
+            'master_sd': { title: "Master SD", description: "Menyelesaikan semua dunia di jenjang SD.", icon: "🎓" },
+            'point_hoarder': { title: "Kolektor Poin", description: "Mencapai 1000 poin.", icon: "💰" },
+            'fashionista': { title: "Fashionista", description: "Membeli 5 item avatar.", icon: "👕" },
+        };
+
+        function checkAchievements() {
+            // Logic to check and award achievements will go here
+        }
+        
+        function renderAchievements() {
+             domElements.achievementsList.innerHTML = '';
+             for(const id in allAchievements) {
+                 const achievement = allAchievements[id];
+                 const isUnlocked = activeUser.achievements.includes(id);
+                 const el = document.createElement('div');
+                 el.className = `flex items-center p-3 rounded-lg ${isUnlocked ? 'bg-amber-100' : 'bg-gray-100 opacity-60'}`;
+                 el.innerHTML = `
+                    <div class="text-4xl mr-4">${achievement.icon}</div>
+                    <div>
+                        <h4 class="font-bold ${isUnlocked ? 'text-amber-800' : ''}">${achievement.title}</h4>
+                        <p class="text-sm ${isUnlocked ? 'text-amber-600' : 'text-gray-600'}">${achievement.description}</p>
+                    </div>
+                 `;
+                 domElements.achievementsList.appendChild(el);
+             }
+             showModal('achievements-modal');
+        }
+
+        function generateNewMission() {
+            return {
+                id: 'm1',
+                type: 'complete_quizzes',
+                description: 'Selesaikan 3 kuis apapun.',
+                target: 3,
+                current: 0,
+                reward: 75,
+                claimed: false
             };
         }
+        
+        function renderDailyMission() {
+            const mission = activeUser.dailyMission;
+            if (!mission) return;
 
-        getPlanetData() {
-            // BUG FIX: Randomize starting angle and adjust orbit/duration for better visual separation
-            const randomAngle = () => Math.floor(Math.random() * 360);
-            return [
-                { id: 'mercury', name: 'Merkurius', color: '#a1a1aa', size: 25, orbit: 15, angle: randomAngle(), duration: 30, type: 'Bebatuan', temp: '167°C', moons: '0', facts: ['Merkurius adalah planet terkecil di Tata Surya.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet apa yang paling dekat dengan Matahari?', options: ['Venus', 'Bumi', 'Merkurius', 'Mars'], answer: 'Merkurius'} },
-                { id: 'venus', name: 'Venus', color: '#fcd34d', size: 35, orbit: 22, angle: randomAngle(), duration: 45, type: 'Bebatuan', temp: '462°C', moons: '0', facts: ['Arah rotasi Venus berlawanan dengan planet lain.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet manakah yang paling panas di Tata Surya?', options: ['Merkurius', 'Venus', 'Mars', 'Jupiter'], answer: 'Venus'} },
-                { id: 'earth', name: 'Bumi', color: '#3b82f6', size: 40, orbit: 30, angle: randomAngle(), duration: 60, type: 'Bebatuan', temp: '15°C', moons: '1', facts: ['Bumi adalah satu-satunya planet yang diketahui memiliki kehidupan.'], game: {type: 'sorting', instructions: 'Pilah sampah ke tempat yang benar untuk menjaga Bumi!', items: [{name:'botol plastik', type:'anorganik'}, {name:'sisa apel', type:'organik'}, {name:'kertas', type:'anorganik'}], bins:['organik', 'anorganik']} },
-                { id: 'mars', name: 'Mars', color: '#dc2626', size: 30, orbit: 38, angle: randomAngle(), duration: 75, type: 'Bebatuan', temp: '-63°C', moons: '2', facts: ['Mars dikenal sebagai Planet Merah karena kaya akan besi oksida.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Gunung tertinggi di Tata Surya, Olympus Mons, ada di planet...', options: ['Bumi', 'Mars', 'Jupiter', 'Saturnus'], answer: 'Mars'} },
-                { id: 'jupiter', name: 'Jupiter', color: '#f97316', size: 70, orbit: 55, angle: randomAngle(), duration: 120, type: 'Raksasa Gas', temp: '-145°C', moons: '79+', facts: ['Jupiter adalah planet terbesar di Tata Surya.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Bintik Merah Raksasa adalah badai besar di planet...', options: ['Saturnus', 'Uranus', 'Neptunus', 'Jupiter'], answer: 'Jupiter'} },
-                { id: 'saturn', name: 'Saturnus', color: '#f59e0b', size: 60, orbit: 70, angle: randomAngle(), duration: 150, type: 'Raksasa Gas', temp: '-178°C', moons: '82+', facts: ['Cincin Saturnus terbuat dari miliaran bongkahan es dan batu.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet manakah yang terkenal karena cincinnya yang indah?', options: ['Jupiter', 'Saturnus', 'Bumi', 'Neptunus'], answer: 'Saturnus'} },
-                { id: 'uranus', name: 'Uranus', color: '#67e8f9', size: 50, orbit: 85, angle: randomAngle(), duration: 180, type: 'Raksasa Es', temp: '-224°C', moons: '27', facts: ['Uranus berotasi pada sisinya, seperti bola yang menggelinding.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet manakah yang berotasi miring?', options: ['Uranus', 'Mars', 'Venus', 'Merkurius'], answer: 'Uranus'} },
-                { id: 'neptune', name: 'Neptunus', color: '#1d4ed8', size: 50, orbit: 95, angle: randomAngle(), duration: 210, type: 'Raksasa Es', temp: '-214°C', moons: '14', facts: ['Neptunus adalah planet yang paling berangin di Tata Surya.'], game: {type: 'quiz', instructions: 'Jawab pertanyaan ini dengan benar!', question: 'Planet terjauh dari Matahari adalah...', options: ['Uranus', 'Saturnus', 'Neptunus', 'Jupiter'], answer: 'Neptunus'} }
-            ];
-        }
-    }
+            domElements.dailyMissionText.textContent = mission.description;
+            const progress = Math.min((mission.current / mission.target) * 100, 100);
+            domElements.missionProgressBar.style.width = `${progress}%`;
+            domElements.missionProgressBar.textContent = `${Math.floor(progress)}%`;
 
-    // Mini-Game Classes (Quiz and Sorting)
-    class QuizGame {
-        constructor(container, config, onComplete) {
-            this.container = container;
-            this.config = config;
-            this.onComplete = onComplete;
-            this.render();
+            if (progress >= 100 && !mission.claimed) {
+                domElements.claimMissionRewardBtn.disabled = false;
+            } else {
+                domElements.claimMissionRewardBtn.disabled = true;
+            }
+            showModal('daily-mission-modal');
         }
-        render() {
-            let optionsHTML = this.config.options.map(opt => `<button class="btn-primary w-full text-base" data-answer="${opt}">${opt}</button>`).join('');
-            this.container.innerHTML = `<div class="p-4 flex flex-col items-center justify-center h-full text-center"><h3 class="text-2xl font-bold mb-6">${this.config.question}</h3><div class="grid grid-cols-2 gap-4 w-full max-w-md">${optionsHTML}</div></div>`;
-            this.container.querySelectorAll('button').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    this.onComplete(btn.dataset.answer === this.config.answer);
-                });
+        
+        function claimMissionReward() {
+            const mission = activeUser.dailyMission;
+            if (mission && mission.current >= mission.target && !mission.claimed) {
+                mission.claimed = true;
+                addPoints(mission.reward);
+                showAnimation(`+${mission.reward} Misi!`);
+                saveData();
+                renderDailyMission();
+            }
+        }
+
+        function renderLeaderboard() {
+            domElements.leaderboardList.innerHTML = '';
+            const sortedUsers = [...userProfiles].sort((a, b) => b.points - a.points);
+            sortedUsers.forEach((user, index) => {
+                const rank = index + 1;
+                const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+                const isCurrentUser = user.id === activeUser.id;
+                const row = document.createElement('div');
+                row.className = `flex items-center justify-between p-3 rounded-lg ${isCurrentUser ? 'bg-blue-100 border-2 border-blue-400' : ''}`;
+                row.style.backgroundColor = isCurrentUser ? '' : 'var(--bg-color)';
+                row.innerHTML = `<div class="flex items-center gap-3"><span class="font-bold text-lg w-8 text-center">${medal}</span><span class="font-semibold">${user.name}</span></div><span class="font-bold text-amber-600">${user.points} Poin</span>`;
+                domElements.leaderboardList.appendChild(row);
             });
+            showModal('leaderboard-modal');
         }
-        destroy() { this.container.innerHTML = ''; }
-    }
 
-    class SortingGame {
-        constructor(container, config, onComplete) {
-            this.container = container;
-            this.config = config;
-            this.onComplete = onComplete;
-            this.sortedCount = 0;
-            this.render();
-        }
-        render() {
-            let itemsHTML = this.config.items.map((item, i) => `<div class="p-2 bg-blue-500 rounded cursor-grab text-center font-semibold" draggable="true" data-type="${item.type}" data-id="${i}">${item.name}</div>`).join('');
-            let binsHTML = this.config.bins.map(bin => `<div class="sorting-bin w-1/2 p-4 border-2 border-dashed rounded h-32 flex items-center justify-center text-xl uppercase" data-bin-type="${bin}">${bin}</div>`).join('');
-            this.container.innerHTML = `<div class="p-4 flex flex-col items-center justify-around h-full"><div id="sort-items" class="flex gap-4 mb-6">${itemsHTML}</div><div id="sort-bins" class="flex gap-4 w-full">${binsHTML}</div></div>`;
-            this.addDragDropListeners();
-        }
-        addDragDropListeners() {
-            const items = Array.from(this.container.querySelectorAll('#sort-items div'));
-            const bins = this.container.querySelectorAll('#sort-bins div');
-            items.forEach(item => {
-                item.addEventListener('dragstart', e => {
-                    e.dataTransfer.setData('text/plain', e.target.dataset.id);
-                    setTimeout(() => item.classList.add('opacity-50'), 0);
-                });
-                item.addEventListener('dragend', () => item.classList.remove('opacity-50'));
-            });
-            bins.forEach(bin => {
-                bin.addEventListener('dragover', e => { e.preventDefault(); bin.classList.add('drag-over'); });
-                bin.addEventListener('dragleave', () => bin.classList.remove('drag-over'));
-                bin.addEventListener('drop', e => {
-                    e.preventDefault();
-                    bin.classList.remove('drag-over');
-                    const itemId = e.dataTransfer.getData('text/plain');
-                    const draggedItem = items.find(i => i.dataset.id === itemId);
-                    if(draggedItem && bin.dataset.binType === draggedItem.dataset.type) {
-                        draggedItem.classList.add('hidden');
-                        this.sortedCount++;
-                        if (this.sortedCount === this.config.items.length) {
-                            this.onComplete(true);
-                        }
-                    } else {
-                        this.onComplete(false);
-                    }
-                });
-            });
-        }
-        destroy() { this.container.innerHTML = ''; }
-    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        const game = new Game();
-        game.init();
-    });
+        // --- Inisialisasi & Helper Functions ---
+        function playSound(type) { 
+            if(!activeUser?.settings?.soundOn) return; 
+            try { 
+                Tone.start(); 
+                const now = Tone.now();
+                if (type === 'correct') sounds.correct.triggerAttackRelease("C5", "8n", now); 
+                else if (type === 'wrong') sounds.wrong.triggerAttackRelease("C3", "8n", now); 
+                else if (type === 'badge') sounds.badge.triggerAttackRelease(["G4", "C5"], "8n", now);
+                else if (type === 'purchase') sounds.purchase.triggerAttackRelease("E5", "8n", now); 
+                else if (type === 'equip') sounds.equip.triggerAttackRelease("G5", "16n", now); 
+                else if (type === 'open') sounds.open.triggerAttackRelease("C4", "8n", now);
+                else sounds.click.triggerAttackRelease("C4", "8n", now); 
+            } catch (e) { 
+                console.error("Tone.js error:", e); 
+            } 
+        }
+        function saveData() { try { if (currentUserIndex > -1 && activeUser) { userProfiles[currentUserIndex] = activeUser; } localStorage.setItem('petualanganPengetahuanV5', JSON.stringify(userProfiles)); } catch (e) { console.error("Failed to save data:", e); } }
+        function loadData() { const d = localStorage.getItem('petualanganPengetahuanV5'); if (d) { try { userProfiles = JSON.parse(d); return true; } catch (e) { console.error("Failed to parse data:", e); localStorage.removeItem('petualanganPengetahuanV5'); return false; } } return false; }
+        function switchScreen(id) { domElements.screens.forEach(s => s.classList.remove('active')); const screen = document.getElementById(id); if (screen) screen.classList.add('active'); }
+        function showModal(id) { playSound('open'); const modal = document.getElementById(id); if (modal) modal.classList.add('active'); }
+        function hideModals() { domElements.modals.forEach(m => m.classList.remove('active')); }
+        function applySettings() { document.body.className = ''; document.body.classList.add(activeUser.settings.theme); }
+
+
+        // --- Event Listeners ---
+        domElements.addNewUserBtn.addEventListener('click', () => { playSound('click'); setupNewUserScreen(); switchScreen('name-entry-screen'); });
+        domElements.cancelNewUserBtn.addEventListener('click', () => { playSound('click'); initializeApp(); });
+        domElements.nextToLevelBtn.addEventListener('click', () => { playSound('click'); createNewUser(domElements.playerNameInput.value.trim(), selectedAvatarId); });
+        domElements.playerNameInput.addEventListener('input', () => { domElements.nextToLevelBtn.disabled = !(domElements.playerNameInput.value.trim() && selectedAvatarId); });
+        document.querySelectorAll('.jenjang-btn').forEach(b => b.addEventListener('click', (e) => { playSound('click'); activeUser.jenjang = e.currentTarget.dataset.jenjang; initializeProgressForJenjang(activeUser.jenjang); saveData(); startSession(); }));
+        domElements.settingsBtn.addEventListener('click', () => { domElements.soundToggleBtn.textContent = activeUser.settings.soundOn ? '🔊' : '🔇'; document.querySelectorAll('#theme-selector button').forEach(btn => btn.classList.toggle('border-blue-500', btn.dataset.theme === activeUser.settings.theme)); showModal('settings-modal'); });
+        domElements.achievementsBtn.addEventListener('click', renderAchievements);
+        domElements.leaderboardBtn.addEventListener('click', renderLeaderboard);
+        domElements.dailyMissionBtn.addEventListener('click', renderDailyMission);
+        domElements.claimMissionRewardBtn.addEventListener('click', claimMissionReward);
+        domElements.shopHubBtn.addEventListener('click', renderShopHub);
+        domElements.closeFunFactBtn.addEventListener('click', () => { hideModals(); renderSubMateri(currentDuniaId); switchScreen('submateri-screen'); });
+        domElements.backToWorldsBtn.addEventListener('click', () => { renderDuniaMap(); switchScreen('map-screen'); });
+        domElements.backToSubmateriBtn.addEventListener('click', () => { renderSubMateri(currentDuniaId); switchScreen('submateri-screen'); });
+        domElements.soundToggleBtn.addEventListener('click', () => { activeUser.settings.soundOn = !activeUser.settings.soundOn; domElements.soundToggleBtn.textContent = activeUser.settings.soundOn ? '🔊' : '🔇'; playSound('click'); saveData(); });
+        domElements.themeSelector.addEventListener('click', (e) => { const btn = e.target.closest('button[data-theme]'); if (!btn) return; playSound('click'); activeUser.settings.theme = btn.dataset.theme; document.body.className = activeUser.settings.theme; saveData(); document.querySelectorAll('#theme-selector button').forEach(b => b.classList.remove('border-blue-500')); btn.classList.add('border-blue-500'); });
+        domElements.resetProgressBtn.addEventListener('click', () => { domElements.resetUsernameConfirm.textContent = activeUser.name; showModal('confirm-reset-modal'); });
+        domElements.cancelResetBtn.addEventListener('click', () => { hideModals(); showModal('settings-modal'); });
+        domElements.confirmResetBtn.addEventListener('click', () => { const idx = userProfiles.findIndex(u => u.id === activeUser.id); if (idx > -1) { userProfiles.splice(idx, 1); saveData(); } hideModals(); initializeApp(); });
+        document.querySelectorAll('.close-modal-btn').forEach(b => b.addEventListener('click', hideModals));
+        domElements.changeUserHeader.addEventListener('click', renderUserSelectionScreen);
+
+        initializeApp();
     </script>
 </body>
 </html>
+
